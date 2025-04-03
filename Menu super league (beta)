@@ -15,9 +15,9 @@ local Tabs = {
 
 Tabs.Main:AddButton({
     Title = "Activate Hitbox",
-    Description = "Expande sua hitbox no Super League.",
+    Description = "Expande sua hitbox no Super League. By Davi Trollz",
     Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/davidfhdgfyyfytyttry/davitrollz-super-league-hit-box-/refs/heads/main/davitrollz-super-league-hit-box-"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/Davitrollz-super-league-hit-box-/refs/heads/main/Davitrollz-super-league-hit-box-"))()
     end
 })
 
@@ -36,28 +36,3 @@ Tabs.Main:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/fx2024ondiscord/test/refs/heads/main/linkvertise-script-api.1.0.8/linkvertise-script-api/languages/linkvertise-script-api.lua"))()
     end
 })
-
--- Sistema de Minimização
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-local MinimizeButton = Instance.new("TextButton")
-MinimizeButton.Size = UDim2.new(0, 50, 0, 50)
-MinimizeButton.Position = UDim2.new(0, 10, 0, 10)
-MinimizeButton.BackgroundColor3 = Color3.new(0, 0, 0)
-MinimizeButton.Text = ""
-MinimizeButton.Visible = false
-MinimizeButton.Parent = ScreenGui
-
-local function MinimizeMenu()
-    Window:SetVisibility(false)
-    MinimizeButton.Visible = true
-end
-
-local function RestoreMenu()
-    Window:SetVisibility(true)
-    MinimizeButton.Visible = false
-end
-
-Window.Minimize:Connect(MinimizeMenu)
-MinimizeButton.MouseButton1Click:Connect(RestoreMenu)

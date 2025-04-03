@@ -1,0 +1,296 @@
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/shlexware/Orion/main/source'))()
+local Window = OrionLib:MakeWindow({
+    Name = "Script para brookhaven (test)",
+    HidePremium = false,
+    SaveConfig = false,
+    ConfigFolder = "OrionTest"
+})
+local Tab = Window:MakeTab({
+    Name = "área de kill",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false 
+})
+local Section = Tab:AddSection({
+    Name = "kill"
+})
+OrionLib:MakeNotification({
+    Name = "olá",
+    Content = "by: XXXTENTACION",
+    Image = "rbxassetid://4483345998",
+    Time = 5
+})
+Tab:AddButton({
+    Name = "Nameless admin - loopfling",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/ltseverydayyou/Nameless-Admin/main/Source"))();
+    end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "REDz Hub",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/REDzHUB/REDzHUB/main/REDzHUB"))()
+        end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "JulHub - IceHub",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/JulHubz/JulHub/main/JulHub"))()
+          end
+})
+Tab:AddButton({
+    Name = "fling gui",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/0Ben1/fe./main/Fling%20GUI"))()
+         end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "infinite yield",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet('https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source'))()
+       end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "brookhaven R4D",
+    Callback = function()
+        print("Botão pressionado")
+--Brookhaven R4D 
+--By M1zz
+loadstring(game:HttpGet('https://raw.githubusercontent.com/M1ZZ001/BrookhavenR4D/main/Brookhaven%20R4D%20Script'))()
+           end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "fling all",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fe-fling-all-10553"))()
+         end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "Brookhaven Hub",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://pastebin.com/raw/fnimPd4C"))()
+          end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "spy gui script - brookhaven",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet(('https://pastefy.app/yumu499O/raw'),true))()
+        end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "OP script brookhaven",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://freenote.biz/raw/Rk3INLZtUF",true))()
+         end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "brookhaven rp v1",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://pastebin.com/raw/6xCEdNff"))();
+         end
+}) 
+        
+local Tab = Window:MakeTab({
+    Name = "Hub",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Section = Tab:AddSection({
+    Name = "Hubs universal"
+})
+Tab:AddButton({
+    Name = "GameHub",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/GamerScripter/Game-Hub/main/loader"))()
+           end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "Tiger Hub",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/balintTheDevX/TigerX-V2/main/Back"))()
+        end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "haxker_66666666 - Hub",
+    Callback = function()
+        print("Botão pressionado")
+--[[
+Join My Discord Please: https://discord.gg/ZQGMtuPCDg
+]]
+loadstring(game:HttpGet('https://raw.githubusercontent.com/FreeRobloxScripts1/Haxker_6666666-Hub/main/loader'))()
+              end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "bido skins Hub",
+    Callback = function()
+              print("button pressed")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/BidoSkinsYT/BidoSkinsYT/main/Bido%20Skins%20V1.8"))()
+            end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "universal Hub",
+    Callback = function()
+              print("button pressed")
+loadstring(game:HttpGet('https://raw.githubusercontent.com/Dvrknvss/UniversalFEScriptHub/main/Script'))()
+            end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "Ghub V14",
+    Callback = function()
+              print("button pressed")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/gclich/GHUBV14XZ/main/Ghub_Main_Loader.txt"))()
+              end
+})
+OrionLib:Init()
+local Tab = Window:MakeTab({
+    Name = "player",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Section = Tab:AddSection({
+    Name = "Script de speed fly esp etc"
+})
+Tab:AddButton({
+    Name = "WalkSpeed",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 70
+        end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "Jump Power",
+    Callback = function()
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = 100
+        end
+})
+  
+OrionLib:Init()
+Tab:AddButton({
+    Name = "Gravity",
+    Callback = function()
+        game.Workspace.Gravity = 10
+        end
+})
+  
+OrionLib:Init()
+Tab:AddButton({
+    Name = "fly gui",
+    Callback = function()
+              print("button pressed")
+loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-Fly-Gui-V3-Dark-Theme-11884"))()
+      end    
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "speed and jump",
+    Callback = function()
+              print("button pressed")
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Shugare/Speed/main/S", true))()
+            end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "esp",
+    Callback = function()
+              print("button pressed")
+ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Esp-Universal-open-source-10455", true))()
+            end
+})
+OrionLib:Init()
+Tab:AddButton({
+	Name = "noclip",
+	Callback = function()
+      		print("button pressed")
+loadstring(game:HttpGet("https://pastebin.com/raw/iZ7xqzyA"))();
+  	end    
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "infinite jump",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://pastebin.com/raw/WRXgwMUU"))();
+       end
+})
+OrionLib:Init()
+local Tab = Window:MakeTab({
+    Name = "trolar kids",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Section = Tab:AddSection({
+    Name = "área de assustar crianças",
+})
+Tab:AddButton({
+    Name = "teleport troll",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://pastebin.com/raw/Siw4mbQd",true))()
+          end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "invisible and teleport",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet('https://raw.githubusercontent.com/0Ben1/fe./dbb6ce6f6cee4f7a5c9e20d7b88e83db2a93bf25/Invisible%20GUI'))()
+         end
+})
+OrionLib:Init()
+local Tab = Window:MakeTab({
+    Name = "Chat",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+local Section = Tab:AddSection({
+    Name = "scripts para o chat",
+})
+Tab:AddButton({
+    Name = "fe chat hax",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://pastebin.com/raw/53ywAXMs"))();
+         end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "chat draw",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet("https://pastebin.com/raw/i2E96Gw9"))();
+         end
+})
+OrionLib:Init()
+Tab:AddButton({
+    Name = "Chat bypass",
+    Callback = function()
+        print("Botão pressionado")
+loadstring(game:HttpGet('https://pastes.io/raw/lstrrfipqq'))();
+       end
+})
+OrionLib:Init()

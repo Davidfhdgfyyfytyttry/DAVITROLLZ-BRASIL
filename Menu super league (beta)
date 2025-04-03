@@ -1,0 +1,63 @@
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+local Window = Fluent:CreateWindow({
+    Title = "Scripts Beta - Super League",
+    SubTitle = "By: Davi Trollz",
+    TabWidth = 200,
+    Size = UDim2.fromOffset(500, 390),
+    Acrylic = true,
+    Theme = "Dark",
+    MinimizeKey = Enum.KeyCode.LeftControl
+})
+
+local Tabs = {
+    Main = Window:AddTab({ Title = "Main", Icon = "game-controller" })
+}
+
+Tabs.Main:AddButton({
+    Title = "Activate Hitbox",
+    Description = "Expande sua hitbox no Super League.",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/davidfhdgfyyfytyttry/davitrollz-super-league-hit-box-/refs/heads/main/davitrollz-super-league-hit-box-"))()
+    end
+})
+
+Tabs.Main:AddButton({
+    Title = "Load Plasma Hub",
+    Description = "Executa o Plasma Hub para Super League.",
+    Callback = function()
+        loadstring(game:HttpGet("https://rawscripts.net/raw/Super-League-Soccer-Plasma-hub-22877"))()
+    end
+})
+
+Tabs.Main:AddButton({
+    Title = "SLS Auto Gol",
+    Description = "Executa o script de auto gol para Super League Soccer.",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/fx2024ondiscord/test/refs/heads/main/linkvertise-script-api.1.0.8/linkvertise-script-api/languages/linkvertise-script-api.lua"))()
+    end
+})
+
+-- Sistema de Minimização
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local MinimizeButton = Instance.new("TextButton")
+MinimizeButton.Size = UDim2.new(0, 50, 0, 50)
+MinimizeButton.Position = UDim2.new(0, 10, 0, 10)
+MinimizeButton.BackgroundColor3 = Color3.new(0, 0, 0)
+MinimizeButton.Text = ""
+MinimizeButton.Visible = false
+MinimizeButton.Parent = ScreenGui
+
+local function MinimizeMenu()
+    Window:SetVisibility(false)
+    MinimizeButton.Visible = true
+end
+
+local function RestoreMenu()
+    Window:SetVisibility(true)
+    MinimizeButton.Visible = false
+end
+
+Window.Minimize:Connect(MinimizeMenu)
+MinimizeButton.MouseButton1Click:Connect(RestoreMenu)

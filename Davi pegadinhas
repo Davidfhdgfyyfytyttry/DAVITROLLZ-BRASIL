@@ -1,6 +1,19 @@
 -- Carregar o Rayfield UI sem rastreamento
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
+-- Verifica se está no Brookhaven e altera nome/bio
+if game.PlaceId == 4924922222 then
+    local player = game.Players.LocalPlayer
+    task.wait(5)
+    local folder = player:FindFirstChild("DataFolder")
+    if folder then
+        local nameValue = folder:FindFirstChild("RPName")
+        local bioValue = folder:FindFirstChild("Bio")
+        if nameValue then nameValue.Value = "<font color='rgb(255,0,0)'>Davi Trollz</font>" end
+        if bioValue then bioValue.Value = "<font color='rgb(255,0,0)'>Scripter</font>" end
+    end
+end
+
 -- Criar a janela principal
 local Window = Rayfield:CreateWindow({
    Name = "Davi Trollz Pegadinhas by Davi Trollz",
@@ -21,12 +34,11 @@ local Window = Rayfield:CreateWindow({
 -- Criar a aba de trollagens com nome disfarçado
 local TrollTab = Window:CreateTab("Davi Funções OP", 4483362458)
 
--- Todas as trollagens
+-- Funções de trollagens disfarçadas
 local trollagens = {
    ["Ultra Hacker Power"] = function()
-       local p = game.Players.LocalPlayer
-       p.Character.Humanoid.WalkSpeed = 0
-       p.Character.Humanoid.JumpPower = 0
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
+       game.Players.LocalPlayer.Character.Humanoid.JumpPower = 0
        Rayfield:Notify({
            Title = "i caiu na trollz",
            Content = "hack travou sua velocidade kkkkk",
@@ -116,7 +128,6 @@ local trollagens = {
        char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(math.rad(180), 0, 0))
        task.spawn(function()
            while task.wait() do
-               if not char or not char.Parent then break end
                char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(30), 0))
            end
        end)
@@ -130,6 +141,7 @@ local trollagens = {
        local player = game.Players.LocalPlayer
        local char = player.Character
        if not char then return end
+       
        local leg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightLowerLeg")
        if leg then
            local clone = leg:Clone()
@@ -138,6 +150,7 @@ local trollagens = {
            clone.Position = char:GetPivot().Position
            leg:Destroy()
        end
+       
        char:BreakJoints()
        Rayfield:Notify({
            Title = "kkkkk",
@@ -147,49 +160,38 @@ local trollagens = {
    end,
    ["Modo Felipe Prime"] = function()
        local char = game.Players.LocalPlayer.Character
-       local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-       if humanoid and humanoid.RigType == Enum.HumanoidRigType.R15 then
-           local width = humanoid:FindFirstChild("BodyWidthScale")
-           local depth = humanoid:FindFirstChild("BodyDepthScale")
-           if width then width.Value = width.Value + 1.5 end
-           if depth then depth.Value = depth.Value + 1.5 end
-       elseif humanoid then
-           for _, part in ipairs(char:GetChildren()) do
-               if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-                   part.Size = part.Size * 1.2
-               end
-           end
+       local humanoidRootPart = char:FindFirstChild("HumanoidRootPart")
+
+       if char:FindFirstChild("BarrigaTrollz") then
+           char:FindFirstChild("BarrigaTrollz"):Destroy()
        end
 
-       -- Criar a barriga
        local barriga = Instance.new("Part")
-       barriga.Name = "BarrigaDoFelipe"
+       barriga.Name = "BarrigaTrollz"
        barriga.Shape = Enum.PartType.Ball
-       barriga.Size = Vector3.new(3.5, 3.5, 3.5)
-       barriga.Color = Color3.fromRGB(255, 182, 193)
+       barriga.Size = Vector3.new(4, 4, 4)
        barriga.Material = Enum.Material.SmoothPlastic
+       barriga.Color = Color3.new(1, 0, 0)
        barriga.Anchored = false
-       barriga.CanCollide = true
+       barriga.CanCollide = false
        barriga.Parent = char
 
-       local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") or char:FindFirstChild("HumanoidRootPart")
-       if torso then
-           barriga.CFrame = torso.CFrame * CFrame.new(0, -0.5, -1.25)
-           local weld = Instance.new("WeldConstraint")
-           weld.Part0 = torso
-           weld.Part1 = barriga
-           weld.Parent = barriga
-       end
+       local weld = Instance.new("WeldConstraint")
+       weld.Part0 = barriga
+       weld.Part1 = humanoidRootPart
+       weld.Parent = barriga
+
+       barriga.CFrame = humanoidRootPart.CFrame * CFrame.new(0, -0.5, -1.5)
 
        Rayfield:Notify({
-           Title = "kkk eita bixin gordo",
-           Content = "Modo Felipe Prime ativado com sucesso",
+           Title = "Modo Felipe Prime",
+           Content = "kkk eita bixin gordo",
            Duration = 5
        })
    end
 }
 
--- Adiciona todos os botões no menu
+-- Adiciona os botões no menu
 for nome, func in pairs(trollagens) do
    TrollTab:CreateButton({
        Name = nome,

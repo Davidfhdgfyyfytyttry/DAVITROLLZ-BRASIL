@@ -169,7 +169,7 @@ local trollagens = {
        barriga.Color = Color3.fromRGB(255, 182, 193)
        barriga.Material = Enum.Material.SmoothPlastic
        barriga.Anchored = false
-       barriga.CanCollide = false
+       barriga.CanCollide = true
        barriga.Parent = char
 
        local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") or char:FindFirstChild("HumanoidRootPart")

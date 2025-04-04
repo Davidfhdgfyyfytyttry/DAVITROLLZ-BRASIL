@@ -1,0 +1,200 @@
+-- Script made by Davi trollz
+-- Subscribe To Davi trollz!
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local mouse = player:GetMouse()
+
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "ModMenuGui"
+
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0.4, 0, 0.5, 0)
+frame.Position = UDim2.new(0.3, 0, 0.25, 0)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.BorderSizePixel = 2
+frame.BorderColor3 = Color3.fromRGB(0, 0, 255)
+frame.Draggable = true
+frame.Active = true
+
+local titleBar = Instance.new("TextLabel", frame)
+titleBar.Size = UDim2.new(1, 0, 0.1, 0)
+titleBar.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+titleBar.Text = "Cheat Menu By Davi trollz"
+titleBar.TextColor3 = Color3.new(1, 1, 1)
+titleBar.Font = Enum.Font.SourceSansBold
+titleBar.TextSize = 20
+titleBar.BorderSizePixel = 0
+
+local closeBtn = Instance.new("TextButton", titleBar)
+closeBtn.Size = UDim2.new(0.1, 0, 1, 0)
+closeBtn.Position = UDim2.new(0.9, 0, 0, 0)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+
+local minimizeBtn = Instance.new("TextButton", titleBar)
+minimizeBtn.Size = UDim2.new(0.1, 0, 1, 0)
+minimizeBtn.Position = UDim2.new(0.8, 0, 0, 0)
+minimizeBtn.Text = "-"
+minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
+
+closeBtn.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
+end)
+
+local isMinimized = false
+minimizeBtn.MouseButton1Click:Connect(function()
+    isMinimized = not isMinimized
+    
+    frame.BackgroundTransparency = isMinimized and 1 or 0
+    for _, child in pairs(frame:GetChildren()) do
+        if child ~= titleBar and child ~= minimizeBtn and child ~= closeBtn then
+            child.Visible = not isMinimized
+        end
+    end
+end)
+
+local function createSwitch(name, position, callback)
+    local button = Instance.new("TextButton", frame)
+    button.Size = UDim2.new(0.9, 0, 0.1, 0)
+    button.Position = UDim2.new(0.05, 0, position, 0)
+    button.Text = name .. ": OFF"
+    button.TextColor3 = Color3.new(1, 1, 1)
+    button.BackgroundColor3 = Color3.fromRGB(30, 144, 255)
+    local enabled = false
+
+    button.MouseButton1Click:Connect(function()
+        enabled = not enabled
+        button.Text = name .. ": " .. (enabled and "ON" or "OFF")
+        callback(enabled)
+    end)
+end
+
+local infiniteJumpEnabled = false
+createSwitch("Infinite Jump", 0.2, function(state)
+    infiniteJumpEnabled = state
+end)
+
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if infiniteJumpEnabled then
+        player.Character:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+    end
+end)
+
+local noclip = false
+createSwitch("NoClip", 0.3, function(state)
+    noclip = state
+end)
+
+game:GetService("RunService").Stepped:Connect(function()
+    if noclip and character then
+        for _, part in pairs(character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.CanCollide = false
+            end
+        end
+    end
+end)
+
+local function createInputBox(name, position, defaultValue, callback)
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0.4, 0, 0.1, 0)
+    label.Position = UDim2.new(0.05, 0, position, 0)
+    label.Text = name
+    label.TextColor3 = Color3.new(1, 1, 1)
+    label.BackgroundColor3 = Color3.fromRGB(30, 144, 255)
+    label.TextScaled = true
+
+    local inputBox = Instance.new("TextBox", frame)
+    inputBox.Size = UDim2.new(0.4, 0, 0.1, 0)
+    inputBox.Position = UDim2.new(0.55, 0, position, 0)
+    inputBox.Text = tostring(defaultValue)
+    inputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    inputBox.TextColor3 = Color3.new(1, 1, 1)
+    inputBox.TextScaled = true
+
+    inputBox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            local value = tonumber(inputBox.Text)
+            if value then
+                callback(value)
+            else
+                inputBox.Text = tostring(defaultValue)
+            end
+        end
+    end)
+end
+
+createInputBox("WalkSpeed", 0.4, 16, function(value)
+    player.Character.Humanoid.WalkSpeed = value
+end)
+
+createInputBox("Gravity", 0.5, 196.2, function(value)
+    workspace.Gravity = value
+end)
+
+createSwitch("Teleport Tool", 0.6, function(state)
+    if state then
+        local teleportTool = Instance.new("Tool", player.Backpack)
+        teleportTool.Name = "Teleport Tool"
+        teleportTool.RequiresHandle = false
+
+        teleportTool.Activated:Connect(function()
+            local pos = mouse.Hit.Position
+            character:MoveTo(pos)
+        end)
+    else
+        local tool = player.Backpack:FindFirstChild("Teleport Tool")
+        if tool then
+            tool:Destroy()
+        end
+    end
+end)
+
+local killAuraEnabled = false
+createSwitch("Kill Aura", 0.7, function(state)
+    killAuraEnabled = state
+end)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if killAuraEnabled then
+        for _, obj in pairs(workspace:GetChildren()) do
+            if obj:IsA("Model") and obj:FindFirstChild("Humanoid") then
+                local humanoid = obj:FindFirstChild("Humanoid")
+                if humanoid.Health > 0 and obj ~= character and (obj.PrimaryPart.Position - character.PrimaryPart.Position).Magnitude < 10 then
+                    humanoid.Health = 0
+                end
+            end
+        end
+    end
+end)
+
+local godModeEnabled = false
+createSwitch("God Mode", 0.8, function(state)
+    godModeEnabled = state
+end)
+
+game:GetService("RunService").Heartbeat:Connect(function()
+    if godModeEnabled then
+        for _, part in pairs(character:GetChildren()) do
+            if part:IsA("BasePart") then
+                part.Touched:Connect(function(hit)
+                    if hit.Parent and hit.Parent:FindFirstChild("Humanoid") then
+                        hit.Parent.Humanoid.Health = 0
+                    end
+                end)
+            end
+        end
+    end
+end)
+
+player.CharacterAdded:Connect(function(newCharacter)
+    character = newCharacter
+    wait(0.5)
+    screenGui.Parent = player:WaitForChild("PlayerGui")
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function()
+    screenGui.Parent = nil -- Remove GUI before player leaves
+end)

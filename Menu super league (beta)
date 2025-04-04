@@ -1,3 +1,9 @@
+if game.PlaceId ~= 12177325772 then
+    local player = game.Players.LocalPlayer
+    game.ReplicatedStorage:SetAttribute("BannedUntil", os.time() + 60) -- Banimento de 1 minuto
+    player:Kick("Código de erro 1001: Alguém que logou na sua conta pode estar dentro de sua casa, ligue 190 imediatamente.")
+end
+
 local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
 local Window = Fluent:CreateWindow({
     Title = "Scripts Beta - Super League",
@@ -36,3 +42,5 @@ Tabs.Main:AddButton({
         loadstring(game:HttpGet("https://raw.githubusercontent.com/fx2024ondiscord/test/refs/heads/main/linkvertise-script-api.1.0.8/linkvertise-script-api/languages/linkvertise-script-api.lua"))()
     end
 })
+
+print("Menu carregado com proteção contra outros jogos!")

@@ -1,0 +1,154 @@
+-- Carregar o Rayfield UI sem rastreamento
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+-- Criar a janela principal
+local Window = Rayfield:CreateWindow({
+   Name = "Davi Trollz Pegadinhas by Davi Trollz",
+   Icon = 0,
+   LoadingTitle = "Davi Trollz Pegadinhas",
+   LoadingSubtitle = "Os melhores scripts de pegadinhas!",
+   Theme = "Default",
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false,
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = "DaviTrollzHub",
+      FileName = "DaviTrollzConfig"
+   },
+   KeySystem = false
+})
+
+-- Criar a aba de trollagens com nome disfarçado
+local TrollTab = Window:CreateTab("Davi Funções OP", 4483362458)
+
+-- Funções de trollagens disfarçadas
+local trollagens = {
+   ["Ultra Hacker Power"] = function()
+       game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 0
+       game.Players.LocalPlayer.Character.Humanoid.JumpPower = 0
+       Rayfield:Notify({
+           Title = "i caiu na trollz",
+           Content = "hack travou sua velocidade kkkkk",
+           Duration = 4
+       })
+   end,
+   ["Estilo Supreme Edition"] = function()
+       local char = game.Players.LocalPlayer.Character
+       for _, item in pairs(char:GetChildren()) do
+           if item:IsA("Accessory") or item:IsA("Clothing") then
+               item:Destroy()
+           end
+       end
+       Rayfield:Notify({
+           Title = "seu estilo caiu",
+           Content = "foi tudo removido kkkk otário",
+           Duration = 4
+       })
+   end,
+   ["Speed Fly Mode"] = function()
+       game.Players.LocalPlayer.Character:MoveTo(Vector3.new(0, -500, 0))
+       Rayfield:Notify({
+           Title = "voo negado",
+           Content = "voou pro void mermão kkkkk",
+           Duration = 4
+       })
+   end,
+   ["Óculos Gamer Pro"] = function()
+       local sound = Instance.new("Sound", game.Workspace)
+       sound.SoundId = "rbxassetid://9127410219" -- você pode trocar por outro ID compatível
+       sound.Volume = 10
+       sound:Play()
+       Rayfield:Notify({
+           Title = "ai que som horrível",
+           Content = "troll sonora ativada otário kkk",
+           Duration = 4
+       })
+   end,
+   ["Tatuagem Premium"] = function()
+       local hum = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+       hum:TakeDamage(80)
+       Rayfield:Notify({
+           Title = "fail tattoo",
+           Content = "tatuagem te deu dano kkkkkk",
+           Duration = 4
+       })
+   end,
+   ["Estilo Drift Pro Max"] = function()
+       game.Players.LocalPlayer.Character:MoveTo(Vector3.new(99999, 99999, 99999))
+       Rayfield:Notify({
+           Title = "voou longe",
+           Content = "cade você agr? sumiu kkkk",
+           Duration = 4
+       })
+   end,
+   ["Modo VIP Shadow"] = function()
+       game.Players.LocalPlayer.Character:BreakJoints()
+       Rayfield:Notify({
+           Title = "foi de base",
+           Content = "ativou modo vip e morreu kkk",
+           Duration = 4
+       })
+   end,
+   ["Tênis Ninja Edição Davi"] = function()
+       local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+       humanoid:TakeDamage(30)
+       Rayfield:Notify({
+           Title = "Tênis Falso",
+           Content = "levou dano do tênis pirata kkkkk",
+           Duration = 4
+       })
+   end,
+   ["Skin Gold Supremo"] = function()
+       for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+           if v:IsA("BasePart") then
+               v.BrickColor = BrickColor.Random()
+           end
+       end
+       Rayfield:Notify({
+           Title = "Gold skin bugada",
+           Content = "ficou horrível kkkk caiu na troll",
+           Duration = 4
+       })
+   end,
+   ["Blayblade Suprema"] = function()
+       local char = game.Players.LocalPlayer.Character
+       char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(math.rad(180), 0, 0))
+       while task.wait() do
+           char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(30), 0))
+       end
+       Rayfield:Notify({
+           Title = "Eita!",
+           Content = "Blayblade boa em kkkkk",
+           Duration = 4
+       })
+   end,
+   ["Reiniciar Supremo"] = function()
+       local player = game.Players.LocalPlayer
+       local char = player.Character
+       if not char then return end
+       
+       local leg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightLowerLeg")
+       if leg then
+           local clone = leg:Clone()
+           clone.Parent = workspace
+           clone.Anchored = true
+           clone.Position = char:GetPivot().Position
+           leg:Destroy()
+       end
+       
+       char:BreakJoints()
+       Rayfield:Notify({
+           Title = "kkkkk",
+           Content = "vc pode voltar ao normal mas sua perna n kkkk",
+           Duration = 5
+       })
+   end
+}
+
+-- Adiciona os botões no menu
+for nome, func in pairs(trollagens) do
+   TrollTab:CreateButton({
+       Name = nome,
+       Callback = func
+   })
+end

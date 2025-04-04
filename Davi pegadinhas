@@ -1,198 +1,150 @@
--- Carregar o Rayfield UI sem rastreamento
+-- Carregar Rayfield UI
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
--- Criar a janela principal
+-- Verifica se está no Brookhaven e muda nome/bio
+if game.PlaceId == 4924922222 then
+    local player = game.Players.LocalPlayer
+    task.wait(5)
+    local folder = player:FindFirstChild("DataFolder")
+    if folder then
+        local nameValue = folder:FindFirstChild("RPName")
+        local bioValue = folder:FindFirstChild("Bio")
+        if nameValue then nameValue.Value = "<font color='rgb(255,0,0)'>Davi Trollz</font>" end
+        if bioValue then bioValue.Value = "<font color='rgb(255,0,0)'>Scripter</font>" end
+    end
+end
+
+-- Criar janela do menu
 local Window = Rayfield:CreateWindow({
-   Name = "Davi Trollz Pegadinhas by Davi Trollz",
-   Icon = 0,
-   LoadingTitle = "Davi Trollz Pegadinhas",
-   LoadingSubtitle = "Os melhores scripts de pegadinhas!",
-   Theme = "Default",
-   DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false,
-   ConfigurationSaving = {
-      Enabled = true,
-      FolderName = "DaviTrollzHub",
-      FileName = "DaviTrollzConfig"
-   },
-   KeySystem = false
+    Name = "Davi Trollz Pegadinhas by Davi Trollz",
+    LoadingTitle = "Davi Trollz Pegadinhas",
+    LoadingSubtitle = "Os melhores scripts de zoeira",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = "DaviTrollzHub",
+        FileName = "Config"
+    },
+    KeySystem = false
 })
 
--- Criar a aba de trollagens com nome disfarçado
+-- Criar aba de trollagens
 local TrollTab = Window:CreateTab("Davi Funções OP", 4483362458)
 
--- Todas as trollagens
+-- Lista de trollagens
 local trollagens = {
-   ["Ultra Hacker Power"] = function()
-       local p = game.Players.LocalPlayer
-       p.Character.Humanoid.WalkSpeed = 0
-       p.Character.Humanoid.JumpPower = 0
-       Rayfield:Notify({
-           Title = "i caiu na trollz",
-           Content = "hack travou sua velocidade kkkkk",
-           Duration = 4
-       })
-   end,
-   ["Estilo Supreme Edition"] = function()
-       local char = game.Players.LocalPlayer.Character
-       for _, item in pairs(char:GetChildren()) do
-           if item:IsA("Accessory") or item:IsA("Clothing") then
-               item:Destroy()
-           end
-       end
-       Rayfield:Notify({
-           Title = "seu estilo caiu",
-           Content = "foi tudo removido kkkk otário",
-           Duration = 4
-       })
-   end,
-   ["Speed Fly Mode"] = function()
-       game.Players.LocalPlayer.Character:MoveTo(Vector3.new(0, -500, 0))
-       Rayfield:Notify({
-           Title = "voo negado",
-           Content = "voou pro void mermão kkkkk",
-           Duration = 4
-       })
-   end,
-   ["Óculos Gamer Pro"] = function()
-       local sound = Instance.new("Sound", game.Workspace)
-       sound.SoundId = "rbxassetid://9127410219"
-       sound.Volume = 10
-       sound:Play()
-       Rayfield:Notify({
-           Title = "ai que som horrível",
-           Content = "troll sonora ativada otário kkk",
-           Duration = 4
-       })
-   end,
-   ["Tatuagem Premium"] = function()
-       local hum = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-       hum:TakeDamage(80)
-       Rayfield:Notify({
-           Title = "fail tattoo",
-           Content = "tatuagem te deu dano kkkkkk",
-           Duration = 4
-       })
-   end,
-   ["Estilo Drift Pro Max"] = function()
-       game.Players.LocalPlayer.Character:MoveTo(Vector3.new(99999, 99999, 99999))
-       Rayfield:Notify({
-           Title = "voou longe",
-           Content = "cade você agr? sumiu kkkk",
-           Duration = 4
-       })
-   end,
-   ["Modo VIP Shadow"] = function()
-       game.Players.LocalPlayer.Character:BreakJoints()
-       Rayfield:Notify({
-           Title = "foi de base",
-           Content = "ativou modo vip e morreu kkk",
-           Duration = 4
-       })
-   end,
-   ["Tênis Ninja Edição Davi"] = function()
-       local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-       humanoid:TakeDamage(30)
-       Rayfield:Notify({
-           Title = "Tênis Falso",
-           Content = "levou dano do tênis pirata kkkkk",
-           Duration = 4
-       })
-   end,
-   ["Skin Gold Supremo"] = function()
-       for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-           if v:IsA("BasePart") then
-               v.BrickColor = BrickColor.Random()
-           end
-       end
-       Rayfield:Notify({
-           Title = "Gold skin bugada",
-           Content = "ficou horrível kkkk caiu na troll",
-           Duration = 4
-       })
-   end,
-   ["Blayblade Suprema"] = function()
-       local char = game.Players.LocalPlayer.Character
-       char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(math.rad(180), 0, 0))
-       task.spawn(function()
-           while task.wait() do
-               if not char or not char.Parent then break end
-               char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(30), 0))
-           end
-       end)
-       Rayfield:Notify({
-           Title = "Eita!",
-           Content = "Blayblade boa em kkkkk",
-           Duration = 4
-       })
-   end,
-   ["Reiniciar Supremo"] = function()
-       local player = game.Players.LocalPlayer
-       local char = player.Character
-       if not char then return end
-       local leg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightLowerLeg")
-       if leg then
-           local clone = leg:Clone()
-           clone.Parent = workspace
-           clone.Anchored = true
-           clone.Position = char:GetPivot().Position
-           leg:Destroy()
-       end
-       char:BreakJoints()
-       Rayfield:Notify({
-           Title = "kkkkk",
-           Content = "vc pode voltar ao normal mas sua perna n kkkk",
-           Duration = 5
-       })
-   end,
-   ["Modo Felipe Prime"] = function()
-       local char = game.Players.LocalPlayer.Character
-       local humanoid = char:FindFirstChildWhichIsA("Humanoid")
-       if humanoid and humanoid.RigType == Enum.HumanoidRigType.R15 then
-           local width = humanoid:FindFirstChild("BodyWidthScale")
-           local depth = humanoid:FindFirstChild("BodyDepthScale")
-           if width then width.Value = width.Value + 1.5 end
-           if depth then depth.Value = depth.Value + 1.5 end
-       elseif humanoid then
-           for _, part in ipairs(char:GetChildren()) do
-               if part:IsA("BasePart") and part.Name ~= "HumanoidRootPart" then
-                   part.Size = part.Size * 1.2
-               end
-           end
-       end
+    ["Ultra Hacker Power"] = function()
+        local humanoid = game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
+        Rayfield:Notify({ Title = "i caiu na trollz", Content = "hack travou sua velocidade kkkkk", Duration = 4 })
+    end,
 
-       -- Criar a barriga
-       local barriga = Instance.new("Part")
-       barriga.Name = "BarrigaDoFelipe"
-       barriga.Shape = Enum.PartType.Ball
-       barriga.Size = Vector3.new(3.5, 3.5, 3.5)
-       barriga.Color = Color3.fromRGB(255, 182, 193)
-       barriga.Material = Enum.Material.SmoothPlastic
-       barriga.Anchored = false
-       barriga.CanCollide = false
-       barriga.Parent = char
+    ["Estilo Supreme Edition"] = function()
+        local char = game.Players.LocalPlayer.Character
+        for _, item in pairs(char:GetChildren()) do
+            if item:IsA("Accessory") or item:IsA("Clothing") then
+                item:Destroy()
+            end
+        end
+        Rayfield:Notify({ Title = "seu estilo caiu", Content = "foi tudo removido kkkk otário", Duration = 4 })
+    end,
 
-       local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso") or char:FindFirstChild("HumanoidRootPart")
-       if torso then
-           barriga.CFrame = torso.CFrame * CFrame.new(0, -0.5, -1.25)
-           local weld = Instance.new("WeldConstraint")
-           weld.Part0 = torso
-           weld.Part1 = barriga
-           weld.Parent = barriga
-       end
+    ["Speed Fly Mode"] = function()
+        game.Players.LocalPlayer.Character:MoveTo(Vector3.new(0, -500, 0))
+        Rayfield:Notify({ Title = "voo negado", Content = "voou pro void mermão kkkkk", Duration = 4 })
+    end,
 
-       Rayfield:Notify({
-           Title = "kkk eita bixin gordo",
-           Content = "Modo Felipe Prime ativado com sucesso",
-           Duration = 5
-       })
-   end
+    ["Óculos Gamer Pro"] = function()
+        local sound = Instance.new("Sound", game.Workspace)
+        sound.SoundId = "rbxassetid://9127410219"
+        sound.Volume = 10
+        sound:Play()
+        Rayfield:Notify({ Title = "ai que som horrível", Content = "troll sonora ativada otário kkk", Duration = 4 })
+    end,
+
+    ["Tatuagem Premium"] = function()
+        game.Players.LocalPlayer.Character:FindFirstChild("Humanoid"):TakeDamage(80)
+        Rayfield:Notify({ Title = "fail tattoo", Content = "tatuagem te deu dano kkkkkk", Duration = 4 })
+    end,
+
+    ["Estilo Drift Pro Max"] = function()
+        game.Players.LocalPlayer.Character:MoveTo(Vector3.new(99999, 99999, 99999))
+        Rayfield:Notify({ Title = "voou longe", Content = "cade você agr? sumiu kkkk", Duration = 4 })
+    end,
+
+    ["Modo VIP Shadow"] = function()
+        game.Players.LocalPlayer.Character:BreakJoints()
+        Rayfield:Notify({ Title = "foi de base", Content = "ativou modo vip e morreu kkk", Duration = 4 })
+    end,
+
+    ["Tênis Ninja Edição Davi"] = function()
+        game.Players.LocalPlayer.Character:FindFirstChild("Humanoid"):TakeDamage(30)
+        Rayfield:Notify({ Title = "Tênis Falso", Content = "levou dano do tênis pirata kkkkk", Duration = 4 })
+    end,
+
+    ["Skin Gold Supremo"] = function()
+        for _, v in pairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+            if v:IsA("BasePart") then
+                v.BrickColor = BrickColor.Random()
+            end
+        end
+        Rayfield:Notify({ Title = "Gold skin bugada", Content = "ficou horrível kkkk caiu na troll", Duration = 4 })
+    end,
+
+    ["Blayblade Suprema"] = function()
+        local char = game.Players.LocalPlayer.Character
+        task.spawn(function()
+            while task.wait() do
+                char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(30), 0))
+            end
+        end)
+        Rayfield:Notify({ Title = "Eita!", Content = "Blayblade boa em kkkkk", Duration = 4 })
+    end,
+
+    ["Reiniciar Supremo"] = function()
+        local player = game.Players.LocalPlayer
+        local char = player.Character
+        local leg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightLowerLeg")
+        if leg then
+            local clone = leg:Clone()
+            clone.Parent = workspace
+            clone.Anchored = true
+            clone.Position = char:GetPivot().Position
+            leg:Destroy()
+        end
+        char:BreakJoints()
+        Rayfield:Notify({ Title = "kkkkk", Content = "vc pode voltar ao normal mas sua perna n kkkk", Duration = 5 })
+    end,
+
+    ["Modo Felipe Prime"] = function()
+        local char = game.Players.LocalPlayer.Character
+        local hrp = char:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
+
+        local barrigaAntiga = char:FindFirstChild("BarrigaTrollz")
+        if barrigaAntiga then barrigaAntiga:Destroy() end
+
+        local barriga = Instance.new("Part")
+        barriga.Name = "BarrigaTrollz"
+        barriga.Shape = Enum.PartType.Ball
+        barriga.Size = Vector3.new(4.5, 4.5, 4.5)
+        barriga.Material = Enum.Material.SmoothPlastic
+        barriga.Color = Color3.fromRGB(255, 0, 0)
+        barriga.CanCollide = false
+        barriga.Anchored = false
+        barriga.Parent = char
+        barriga.CFrame = hrp.CFrame * CFrame.new(0, -1.2, -1.8)
+
+        local weld = Instance.new("WeldConstraint")
+        weld.Part0 = barriga
+        weld.Part1 = hrp
+        weld.Parent = barriga
+
+        Rayfield:Notify({ Title = "Modo Felipe Prime", Content = "kkk eita bixin gordo", Duration = 5 })
+    end
 }
 
--- Adiciona todos os botões no menu
+-- Criar os botões no menu
 for nome, func in pairs(trollagens) do
-   TrollTab:CreateButton({
-       Name = nome,
-       Callback = func
-   })
+    TrollTab:CreateButton({ Name = nome, Callback = func })
 end

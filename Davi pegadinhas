@@ -54,9 +54,10 @@ local trollagens = {
        })
    end,
    ["Óculos Gamer Pro"] = function()
-       local sound = Instance.new("Sound", game.Workspace)
-       sound.SoundId = "rbxassetid://9127410219" -- você pode trocar por outro ID compatível
+       local sound = Instance.new("Sound", workspace)
+       sound.SoundId = "rbxassetid://9127410219"
        sound.Volume = 10
+       sound.Looped = false
        sound:Play()
        Rayfield:Notify({
            Title = "ai que som horrível",
@@ -110,42 +111,43 @@ local trollagens = {
            Duration = 4
        })
    end,
-   ["Blayblade Suprema"] = function()
-       local char = game.Players.LocalPlayer.Character
-       char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(math.rad(180), 0, 0))
-       while task.wait() do
-           char:SetPrimaryPartCFrame(char.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(30), 0))
-       end
+   ["Ativar Segurança 3.0"] = function()
        Rayfield:Notify({
-           Title = "Eita!",
-           Content = "Blayblade boa em kkkkk",
-           Duration = 4
+           Title = "KKKKKK",
+           Content = "seus dados do Roblox tá sendo enviado pro meu email trouxa kkkk",
+           Duration = 9
        })
    end,
-   ["Reiniciar Supremo"] = function()
-       local player = game.Players.LocalPlayer
-       local char = player.Character
-       if not char then return end
-       
-       local leg = char:FindFirstChild("Right Leg") or char:FindFirstChild("RightLowerLeg")
-       if leg then
-           local clone = leg:Clone()
-           clone.Parent = workspace
-           clone.Anchored = true
-           clone.Position = char:GetPivot().Position
-           leg:Destroy()
+   ["Modo Felipe Prime"] = function()
+       local char = game.Players.LocalPlayer.Character
+       local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso")
+       if torso then
+           local belly = Instance.new("Part")
+           belly.Size = Vector3.new(2.5, 2.5, 2.5)
+           belly.Shape = Enum.PartType.Ball
+           belly.BrickColor = torso.BrickColor
+           belly.Material = torso.Material
+           belly.Anchored = false
+           belly.CanCollide = false
+           belly.Name = "BarrigaDoFelipe"
+           belly.CFrame = torso.CFrame * CFrame.new(0, -0.5, 1.2)
+           belly.Parent = char
+
+           local weld = Instance.new("WeldConstraint")
+           weld.Part0 = belly
+           weld.Part1 = torso
+           weld.Parent = belly
+
+           Rayfield:Notify({
+               Title = "Modo Felipe Prime Ativado",
+               Content = "kkk eita bixin gordo",
+               Duration = 5
+           })
        end
-       
-       char:BreakJoints()
-       Rayfield:Notify({
-           Title = "kkkkk",
-           Content = "vc pode voltar ao normal mas sua perna n kkkk",
-           Duration = 5
-       })
-   end
+   end,
 }
 
--- Adiciona os botões no menu
+-- Adicionar os botões ao menu
 for nome, func in pairs(trollagens) do
    TrollTab:CreateButton({
        Name = nome,

@@ -198,4 +198,32 @@ local function AddDraggingFunctionality(DragPoint, Main)
         local Dragging, DragInput, MousePos, FramePos = false
         DragPoint.InputBegan:Connect(function(Input)
             if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-               
+                Dragging = true
+                MousePos = Input.Position
+                FramePos = Main.Position
+            end
+        end)
+        DragPoint.InputChanged:Connect(function(Input)
+            if Dragging and Input.UserInputType == Enum.UserInputType.MouseMovement then
+                local Delta = Input.Position - MousePos
+                Main.Position = UDim2.new(FramePos.X.Scale, FramePos.X.Offset + Delta.X, FramePos.Y.Scale, FramePos.Y.Offset + Delta.Y)
+            end
+        end)
+        DragPoint.InputEnded:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                Dragging = false
+            end
+        end)
+    end)
+end
+
+-- Add functions, buttons, and menu to your interface below
+-- Ensure to set your name ("Davi Trollz") as the credit wherever applicable
+
+-- For example, for credits:
+
+local CreditsLabel = Instance.new("TextLabel")
+CreditsLabel.Text = "Script by Davi Trollz"
+CreditsLabel.Parent = Rayfield.Main
+
+-- Continue with other customizations and implementations

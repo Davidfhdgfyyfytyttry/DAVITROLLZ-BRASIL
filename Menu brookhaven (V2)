@@ -1,95 +1,66 @@
--- Verifica se o jogo é Brookhaven
-if game.PlaceId ~= 4924922222 then
-    game.Players.LocalPlayer:Kick("Este script só pode ser executado no Brookhaven!")
-    return
-end
+-- Carregar Rayfield UI Antigo (Sirius)
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
-local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
-local Window = Fluent:CreateWindow({
-    Title = "Scripts para Brookhaven Hub",
-    SubTitle = "By Davi Trollz",
-    TabWidth = 200,
-    Size = UDim2.fromOffset(500, 390),
-    Acrylic = true,
-    Theme = "Dark",
-    MinimizeKey = Enum.KeyCode.LeftControl
+local Window = Rayfield:CreateWindow({
+    Name = "Brookhaven Hub by Davi trollz",
+    LoadingTitle = "Brookhaven Trollz",
+    LoadingSubtitle = "Calma ai Jão ta carregando os scripts",
+    ConfigurationSaving = {
+        Enabled = true,
+        FolderName = "BrookhavenHub",
+        FileName = "Configs"
+    },
+    KeySystem = false,
 })
 
-local Tabs = {
-    Main = Window:AddTab({ Title = "Main", Icon = "game-controller" })
-}
+-- Aba principal
+local MainTab = Window:CreateTab("Scripts Brookhaven", 4483362458)
 
--- Adiciona scripts ao menu
-Tabs.Main:AddButton({
-    Title = "Barulhos Orror",
-    Description = "Bom para assustar as crianças chatas.",
+MainTab:CreateButton({
+    Name = "Barulhos Horror",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/ameicaa1/brookhaven-script/main/brookhaven%20script.lua"))()
-    end
+    end,
 })
 
-Tabs.Main:AddButton({
-    Title = "Rael Hub",
-    Description = "Muito bom, uso atualmente e recomendo.",
+MainTab:CreateButton({
+    Name = "Rael Hub",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Laelmano24/Rael-Hub/main/main.txt"))()
-    end
+    end,
 })
 
-Tabs.Main:AddButton({
-    Title = "SP Hub",
-    Description = "Parecido com o Rael Hub, mas com menos opções.",
+MainTab:CreateButton({
+    Name = "SP Hub",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/as6cd0/SP_Hub/main/Brookhaven"))()
-    end
+    end,
 })
 
-Tabs.Main:AddButton({
-    Title = "Invisível",
-    Description = "Te deixa invisível, bom para trollar ou fugir.",
+MainTab:CreateButton({
+    Name = "Ficar Invisível",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostPlayer352/Test4/main/Invisible%20Gui"))()
-    end
+    end,
 })
 
--- Novos scripts adicionados
-Tabs.Main:AddButton({
-    Title = "Admin Menu",
-    Description = "Acesso a comandos de administrador, teleporte, trollagem, desbanir e eliminar todos os jogadores.",
+MainTab:CreateButton({
+    Name = "Admin Menu",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/BrookhavenDev/BrookhavenScript/main/AdminMenu.lua"))()
-    end
+    end,
 })
 
-Tabs.Main:AddButton({
-    Title = "AstroX Hub",
-    Description = "Permite alterar a cor da casa, teleporte, aumentar a velocidade do carro e mais.",
+MainTab:CreateButton({
+    Name = "AstroX Hub",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroxHub/Brookhaven/main/AstroXHub.lua"))()
-    end
+    end,
 })
 
--- Botão para minimizar e restaurar o menu
-local MinimizeButton = Instance.new("TextButton")
-MinimizeButton.Size = UDim2.new(0, 50, 0, 25)
-MinimizeButton.Position = UDim2.new(1, -60, 0, 10)
-MinimizeButton.Text = "-"
-MinimizeButton.Parent = Window.Frame
-
-local RestoreButton = Instance.new("TextButton")
-RestoreButton.Size = UDim2.new(0, 100, 0, 50)
-RestoreButton.Position = UDim2.new(0.5, -50, 0.9, 0)
-RestoreButton.Text = "Clique para reabrir o menu"
-RestoreButton.Visible = false
-RestoreButton.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-MinimizeButton.MouseButton1Click:Connect(function()
-    Window.Frame.Visible = false
-    RestoreButton.Visible = true
-end)
-
-RestoreButton.MouseButton1Click:Connect(function()
-    Window.Frame.Visible = true
-    RestoreButton.Visible = false
-end)
-
+MainTab:CreateButton({
+    Name = "meu grupo do ZAP pra tu pedir suporte",
+    Callback = function()
+        https://chat.whatsapp.com/KZo7BDEx1dr8fsG7GYCrv3
+    end,
+})

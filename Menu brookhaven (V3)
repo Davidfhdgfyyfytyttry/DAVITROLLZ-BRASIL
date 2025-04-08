@@ -2,9 +2,9 @@
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "Brookhaven Hub by Davi trollz",
+    Name = "Brookhaven Hub by Davi",
     LoadingTitle = "Brookhaven Trollz",
-    LoadingSubtitle = "Calma ai Jão ta carregando os scripts",
+    LoadingSubtitle = "Carregando scripts...",
     ConfigurationSaving = {
         Enabled = true,
         FolderName = "BrookhavenHub",
@@ -55,12 +55,5 @@ MainTab:CreateButton({
     Name = "AstroX Hub",
     Callback = function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/AstroxHub/Brookhaven/main/AstroXHub.lua"))()
-    end,
-})
-
-MainTab:CreateButton({
-    Name = "meu grupo do ZAP pra tu pedir suporte",
-    Callback = function()
-        https://chat.whatsapp.com/KZo7BDEx1dr8fsG7GYCrv3
     end,
 })

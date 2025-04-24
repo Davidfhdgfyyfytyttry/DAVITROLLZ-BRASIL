@@ -10,7 +10,7 @@ local Window = Rayfield:CreateWindow({
         FolderName = "BrookhavenHub",
         FileName = "Configs"
     },
-    KeySystem = false,
+    KeySystem = true,
 })
 
 -- Aba principal

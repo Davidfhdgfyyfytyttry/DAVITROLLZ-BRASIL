@@ -1,0 +1,559 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Window = Rayfield:CreateWindow({
+   Name = "Davi trollz (Brookhaven Rp🏡)",
+   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   LoadingTitle = "Davi trollz",
+   LoadingSubtitle = "by gabezim346",
+   Theme = "DarkBlue", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+
+   DisableRayfieldPrompts = false,
+   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Davi trollz"
+   },
+})
+
+Rayfield:Notify({
+   Title = "Davi trollz",
+   Content = "Thank You For Using Davi trollz (Brookhaven RP",
+   Duration = 10,
+   Image = 131090741681210,
+})
+
+---TabsHome---
+local TabHome = Window:CreateTab("Home🏠", 131090741681210) -- Title, Image
+local Label = TabHome:CreateLabel("Welcome To The Davi trollz Scripter", 73798727737509, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Label = TabHome:CreateLabel("Status Script (🟡) (Working (Issue)", 119337150944005, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreThemeassas
+local Paragraph = TabHome:CreateParagraph({Title = "Credits", Content = "Tiktok - @gabezim346"})
+local Paragraph = TabHome:CreateParagraph({Title = "Update Logs", Content = "Fix Heads/GirlBundle/BoyBundle/Custom Not Working!!!"})
+
+
+---Tabs BrookhavenRp---
+local Tab1 = Window:CreateTab("Heads", 131090741681210) -- Title, Image
+local Tab2 = Window:CreateTab("Girl Bundle", 131090741681210) -- Title, Image
+local Tab3 = Window:CreateTab("Boy Bundle", 131090741681210) -- Title, Image
+local Tab4 = Window:CreateTab("Custom (Wait Fix!)", 131090741681210) -- Title, Image
+local Tab5 = Window:CreateTab("LocalPLayer", 131090741681210) -- Title, Image
+
+---Tabs 1 Classic Heads---
+local Label = Tab1:CreateLabel("Classic Heads", 76356016034708, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab1:CreateButton({
+   Name = "Cheeks Head",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 746767604
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab1:CreateButton({
+   Name = "Narrow Head",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 746774687
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab1:CreateButton({
+   Name = "Paragon Head",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 616398268
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab1:CreateButton({
+   Name = "Strong Jaw Head",
+   Callback = function()
+ local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 616399508
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab1:CreateButton({
+   Name = "Chiseled Head",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 616387160
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+
+---Character Head---
+local Label = Tab1:CreateLabel("Character Heads", 76356016034708, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab1:CreateButton({
+   Name = "Headless Head (Real)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 134082579
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab1:CreateButton({
+   Name = "Blazeburner Head (Old)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 3210773801
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab1:CreateButton({
+   Name = "Korblox DeatherWalker Head (Real)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 0,
+        [5] = 0,
+        [6] = 16580493236
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+
+---tabs 2---
+local Label = Tab2:CreateLabel("Blush Fashion Doll (Girl(Arm/Torso)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab2:CreateButton({
+   Name = "Blush Fashion Doll (Black)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 72823735643524,
+        [2] = 116063189738050,
+        [3] = 132179793557248,
+        [4] = 0,
+        [5] = 0,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab2:CreateButton({
+   Name = "Blush Fashion Doll (Grey)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 115745153758680,
+        [2] = 76683091425509,
+        [3] = 75159926897589,
+        [4] = 0,
+        [5] = 0,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Label = Tab2:CreateLabel("Mini Woman (Girl(Body)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab2:CreateButton({
+   Name = "Mini Woman (Black)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14854025431,
+        [2] = 14854025574,
+        [3] = 14854025318,
+        [4] = 14854025333,
+        [5] = 14854025739,
+        [6] = 0,
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab2:CreateButton({
+   Name = "Mini Woman (White)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14854042248,
+        [2] = 14854025574,
+        [3] = 14854025318,
+        [4] = 14854025333,
+        [5] = 14854025739,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab2:CreateButton({
+   Name = "Mini Woman (Grey)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 95887848489798,
+        [2] = 14854025574,
+        [3] = 14854025318,
+        [4] = 14854025333,
+        [5] = 14854025739,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Label = Tab2:CreateLabel("Chibi Doll Girl (Girl(Body)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab2:CreateButton({
+   Name = "Chibi Doll Girl (Black/Body)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14775830263,
+        [2] = 14775830261,
+        [3] = 14775830259,
+        [4] = 14775830269,
+        [5] = 14775830264,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab2:CreateButton({
+   Name = "Chibi Doll Girl (White/body)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14785351665,
+        [2] = 14775830261,
+        [3] = 14775830259,
+        [4] = 14775830269,
+        [5] = 14775830264,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Label = Tab2:CreateLabel("Mini Plushie (Girl/Boy(Body)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab2:CreateButton({
+   Name = "Mini Plusie (Black)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14579958702,
+        [2] = 14583777042,
+        [3] = 14583777007,
+        [4] = 14579959249,
+        [5] = 14579963667,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab2:CreateButton({
+   Name = "Mini Plusie (White)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14583777041,
+        [2] = 14583776823,
+        [3] = 14583776741,
+        [4] = 14583776823,
+        [5] = 14583776741,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+---Tabs 3---
+local Label = Tab3:CreateLabel("Mini Plushie (Girl/Boy(Body)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab3:CreateButton({
+   Name = "Mini Plusie (Black)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14579958702,
+        [2] = 14583777042,
+        [3] = 14583777007,
+        [4] = 14579959249,
+        [5] = 14579963667,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab3:CreateButton({
+   Name = "Mini Plusie (White)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 14583777041,
+        [2] = 14583776823,
+        [3] = 14583776741,
+        [4] = 14583776823,
+        [5] = 14583776741,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Label = Tab3:CreateLabel("Inf15 thin (Boy(Body)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab3:CreateButton({
+   Name = "Inf15 thin (Black)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 92757812011061,
+        [2] = 99519402284266,
+        [3] = 115905570886697,
+        [4] = 84418052877367,
+        [5] = 124343282827669,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab3:CreateButton({
+   Name = "Inf15 thin (White)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 82491774691726,
+        [2] = 99519402284266,
+        [3] = 115905570886697,
+        [4] = 84418052877367,
+        [5] = 124343282827669,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Label = Tab3:CreateLabel("Mini Man (Boy(Body)", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab3:CreateButton({
+   Name = "Mini Man (Black)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 121434034087686,
+        [2] = 117079685799715,
+        [3] = 81502860408959,
+        [4] = 89658787394734,
+        [5] = 108834379337347,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab3:CreateButton({
+   Name = "Mini Man (White)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 122602157507621,
+        [2] = 117079685799715,
+        [3] = 81502860408959,
+        [4] = 89658787394734,
+        [5] = 108834379337347,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab3:CreateButton({
+   Name = "Mini Man (Grey)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 93074839269016,
+        [2] = 117079685799715,
+        [3] = 81502860408959,
+        [4] = 89658787394734,
+        [5] = 108834379337347,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+
+---Tabs 4---
+
+local Label = Tab4:CreateLabel("Custom Girl/Boy???", 80756285712103, Color3.fromRGB(255, 255, 255), false) -- Title, Icon, Color, IgnoreTheme
+local Button = Tab4:CreateButton({
+   Name = "Korblox DeathSpeaker (Right Leg)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 139607718,
+        [5] = 0,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab4:CreateButton({
+   Name = "Zombie/Frost Leg",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 37754710,
+        [5] = 139572789,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab4:CreateButton({
+   Name = "Blocky Girl (Right Leg)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 0,
+        [3] = 0,
+        [4] = 14755622570,
+        [5] = 14755622524,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+local Button = Tab4:CreateButton({
+   Name = "Woman (Arm)",
+   Callback = function()
+local args = {
+    [1] = {
+        [1] = 0,
+        [2] = 86499698,
+        [3] = 86499716,
+        [4] = 0,
+        [5] = 0,
+        [6] = 0
+    }
+}
+
+game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("ChangeCharacterBody"):InvokeServer(unpack(args))
+   end,
+})
+
+--Tab 5 localplayer--
+local Slider = Tab5:CreateSlider({
+   Name = "WalkSpeed",
+   Range = {16, 1000},
+   Increment = 1,
+   Suffix = "",
+   CurrentValue = 16,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+   end,
+})
+local Slider = Tab5:CreateSlider({
+   Name = "JumpPower",
+   Range = {25, 1000},
+   Increment = 1,
+   Suffix = "",
+   CurrentValue = 16,
+   Flag = "Slider1", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+   end,
+})

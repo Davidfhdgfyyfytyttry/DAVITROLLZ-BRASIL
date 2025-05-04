@@ -1,3 +1,26 @@
+-- Define bio inicial como "Loading"
+local args = {
+    [1] = "RolePlayBio",
+    [2] = "Davi trollz - Loading⚡"
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args))
+wait(10)
+
+-- Altera para "loaded"
+args = {
+    [1] = "RolePlayBio",
+    [2] = "Davi trollz - loaded✅"
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args))
+wait(2)
+
+-- Limpa o texto
+args = {
+    [1] = "RolePlayBio",
+    [2] = ""
+}
+game:GetService("ReplicatedStorage").RE:FindFirstChild("1RPNam1eTex1t"):FireServer(unpack(args))
+
 -- Texto no canto superior esquerdo mudando de cor
 local gui = Instance.new("ScreenGui", game.CoreGui)
 local texto = Instance.new("TextLabel", gui)
@@ -11,10 +34,10 @@ texto.Text = "Davi trollz (beta)"
 texto.TextColor3 = Color3.new(1, 1, 1)
 
 spawn(function()
-	while true do
-		texto.TextColor3 = Color3.fromHSV(tick() % 5 / 5, 1, 1)
-		wait(0.1)
-	end
+    while true do
+        texto.TextColor3 = Color3.fromHSV(tick() % 5 / 5, 1, 1)
+        wait(0.1)
+    end
 end)
 
 local Players = game:GetService("Players")
@@ -26,9 +49,9 @@ local teleportTool = Instance.new("Tool")
 teleportTool.RequiresHandle = false
 teleportTool.Name = "Teleport Trollz"
 teleportTool.Activated:Connect(function()
-	local pos = mouse.Hit + Vector3.new(0, 2.5, 0)
-	pos = CFrame.new(pos.X, pos.Y, pos.Z)
-	player.Character.HumanoidRootPart.CFrame = pos
+    local pos = mouse.Hit + Vector3.new(0, 2.5, 0)
+    pos = CFrame.new(pos.X, pos.Y, pos.Z)
+    player.Character.HumanoidRootPart.CFrame = pos
 end)
 teleportTool.Parent = player.Backpack
 
@@ -37,10 +60,10 @@ local removerTool = Instance.new("Tool")
 removerTool.RequiresHandle = false
 removerTool.Name = "Remover (visual)"
 removerTool.Activated:Connect(function()
-	local target = mouse.Target
-	if target and target:IsDescendantOf(workspace) and not target:IsDescendantOf(player.Character) then
-		target:Destroy()
-	end
+    local target = mouse.Target
+    if target and target:IsDescendantOf(workspace) and not target:IsDescendantOf(player.Character) then
+        target:Destroy()
+    end
 end)
 removerTool.Parent = player.Backpack
 
@@ -49,12 +72,12 @@ local superSaltoTool = Instance.new("Tool")
 superSaltoTool.RequiresHandle = false
 superSaltoTool.Name = "Super Salto"
 superSaltoTool.Activated:Connect(function()
-	local humanoid = player.Character:FindFirstChild("Humanoid")
-	if humanoid then
-		humanoid.JumpHeight = 100
-		wait(5)
-		humanoid.JumpHeight = 50
-	end
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.JumpHeight = 100
+        wait(5)
+        humanoid.JumpHeight = 50
+    end
 end)
 superSaltoTool.Parent = player.Backpack
 
@@ -63,12 +86,12 @@ local velocidadeTool = Instance.new("Tool")
 velocidadeTool.RequiresHandle = false
 velocidadeTool.Name = "Velocidade Aumentada"
 velocidadeTool.Activated:Connect(function()
-	local humanoid = player.Character:FindFirstChild("Humanoid")
-	if humanoid then
-		humanoid.WalkSpeed = 100
-		wait(5)
-		humanoid.WalkSpeed = 16
-	end
+    local humanoid = player.Character:FindFirstChild("Humanoid")
+    if humanoid then
+        humanoid.WalkSpeed = 100
+        wait(5)
+        humanoid.WalkSpeed = 16
+    end
 end)
 velocidadeTool.Parent = player.Backpack
 
@@ -77,11 +100,11 @@ local explosaoTool = Instance.new("Tool")
 explosaoTool.RequiresHandle = false
 explosaoTool.Name = "Explosão Trollz (visual)"
 explosaoTool.Activated:Connect(function()
-	local explosion = Instance.new("Explosion")
-	explosion.Position = mouse.Hit.Position
-	explosion.BlastRadius = 10
-	explosion.BlastPressure = 100000
-	explosion.Parent = workspace
+    local explosion = Instance.new("Explosion")
+    explosion.Position = mouse.Hit.Position
+    explosion.BlastRadius = 10
+    explosion.BlastPressure = 100000
+    explosion.Parent = workspace
 end)
 explosaoTool.Parent = player.Backpack
 
@@ -90,7 +113,7 @@ local voarTool = Instance.new("Tool")
 voarTool.RequiresHandle = false
 voarTool.Name = "Voar"
 voarTool.Activated:Connect(function()
-	loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt"))()
 end)
 voarTool.Parent = player.Backpack
 
@@ -99,6 +122,6 @@ local raelHubTool = Instance.new("Tool")
 raelHubTool.RequiresHandle = false
 raelHubTool.Name = "Rael Hub"
 raelHubTool.Activated:Connect(function()
-	loadstring(game:HttpGet("https://rawscripts.net/raw/The-Mimic-Rael-Hub-20921"))()
+    loadstring(game:HttpGet("https://rawscripts.net/raw/The-Mimic-Rael-Hub-20921"))()
 end)
 raelHubTool.Parent = player.Backpack

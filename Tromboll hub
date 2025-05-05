@@ -1,0 +1,329 @@
+-- Davi trollz GUI COM ROLAGEM
+
+
+
+local Players = game:GetService("Players")
+
+local Gui, Main, Logo
+
+local loadedScripts = {}
+
+
+
+local function createGui()
+
+    Gui = Instance.new("ScreenGui")
+
+    Gui.Name = "Davitrollz GUI"
+
+    Gui.ResetOnSpawn = false
+
+    Gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    Gui.DisplayOrder = 10
+
+
+
+    Logo = Instance.new("TextButton")
+
+    Logo.Size = UDim2.new(0, 50, 0, 50)
+
+    Logo.Position = UDim2.new(0.05, 0, 0.05, 0)
+
+    Logo.BackgroundTransparency = 1
+
+    Logo.Text = "⚙️AQUI O BOTÃO DE MINIMIZAR!⚙️"
+
+    Logo.TextSize = 30
+
+    Logo.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    Logo.Parent = Gui
+
+
+
+    local dragging = false
+
+    local dragInput, mousePos, framePos
+
+
+
+    Logo.InputBegan:Connect(function(input)
+
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+            dragging = true
+
+            dragInput = input
+
+            mousePos = input.Position
+
+            framePos = Logo.Position
+
+        end
+
+    end)
+
+
+
+    Logo.InputEnded:Connect(function(input)
+
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+
+            dragging = false
+
+        end
+
+    end)
+
+
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+
+        if dragging then
+
+            local delta = input.Position - mousePos
+
+            Logo.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+
+        end
+
+    end)
+
+
+
+    Main = Instance.new("Frame")
+
+    Main.Name = "Main"
+
+    Main.Size = UDim2.new(0, 400, 0, 300)
+
+    Main.Position = UDim2.new(0.5, -200, 0.5, -150)
+
+    Main.BackgroundColor3 = Color3.fromRGB(0, 60, 120)
+
+    Main.BackgroundTransparency = 0.4
+
+    Main.BorderSizePixel = 0
+
+    Main.Active = true
+
+    Main.Visible = false
+
+    Main.Parent = Gui
+
+
+
+    local UICorner = Instance.new("UICorner", Main)
+
+    UICorner.CornerRadius = UDim.new(0, 8)
+
+
+
+    local Label = Instance.new("TextLabel")
+
+    Label.Size = UDim2.new(1, 0, 0, 40)
+
+    Label.BackgroundColor3 = Color3.fromRGB(0, 40, 80)
+
+    Label.BackgroundTransparency = 0.3
+
+    Label.Text = "tikTok @Davitrollz"
+
+    Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    Label.TextSize = 18
+
+    Label.Font = Enum.Font.GothamBold
+
+    Label.Parent = Main
+
+
+
+    Instance.new("UICorner", Label).CornerRadius = UDim.new(0, 8)
+
+
+
+    local CloseButton = Instance.new("TextButton", Main)
+
+    CloseButton.Size = UDim2.new(0, 30, 0, 30)
+
+    CloseButton.Position = UDim2.new(1, -35, 0, 5)
+
+    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+
+    CloseButton.Text = "X"
+
+    CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    CloseButton.TextSize = 20
+
+    CloseButton.Font = Enum.Font.GothamBold
+
+    CloseButton.MouseButton1Click:Connect(function()
+
+        Main.Visible = false
+
+    end)
+
+
+
+    Logo.MouseButton1Click:Connect(function()
+
+        Main.Visible = not Main.Visible
+
+    end)
+
+end
+
+
+
+-- ROLAGEM COM SCROLLING FRAME
+
+local ButtonHolder
+
+local function createScrollFrame()
+
+    ButtonHolder = Instance.new("ScrollingFrame", Main)
+
+    ButtonHolder.Position = UDim2.new(0, 0, 0, 45)
+
+    ButtonHolder.Size = UDim2.new(1, 0, 1, -50)
+
+    ButtonHolder.CanvasSize = UDim2.new(0, 0, 0, 0)
+
+    ButtonHolder.ScrollBarThickness = 6
+
+    ButtonHolder.BackgroundTransparency = 1
+
+    ButtonHolder.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+
+
+    local UIListLayout = Instance.new("UIListLayout", ButtonHolder)
+
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    UIListLayout.Padding = UDim.new(0, 10)
+
+end
+
+
+
+-- CRIA BOTÕES DENTRO DO SCROLL
+
+local function createButton(text, url, repetir)
+
+    local Button = Instance.new("TextButton", ButtonHolder)
+
+    Button.Size = UDim2.new(0.9, 0, 0, 40)
+
+    Button.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+
+    Button.Text = text
+
+    Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+    Button.TextSize = 14
+
+    Button.Font = Enum.Font.GothamBold
+
+
+
+    Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
+
+
+
+    Button.MouseButton1Click:Connect(function()
+
+        local success, err = pcall(function()
+
+            loadstring(game:HttpGet(url))()
+
+        end)
+
+        if success then
+
+            print(text .. " foi executado com sucesso.")
+
+            loadedScripts[url] = true
+
+        else
+
+            warn("Erro ao executar script:", err)
+
+        end
+
+    end)
+
+end
+
+
+
+local function monitorDeathAndDeactivateEsp()
+
+    Players.LocalPlayer.CharacterAdded:Connect(function()
+
+        loadedScripts["https://gist.github.com/ryzinblack/bfecd1d5bbcd54c57c5ac22a47e3aa50/raw"] = nil
+
+        print("ESP PLAYER RGB desativado ao renascer.")
+
+    end)
+
+end
+
+
+
+monitorDeathAndDeactivateEsp()
+
+createGui()
+
+createScrollFrame()
+
+
+
+-- ADICIONA OS BOTÕES COM ROLAGEM
+
+createButton("BRING PARTS V1", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Eu%20seila%201", false)
+
+createButton("BRING PARTS V2 SUAVE", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Eu%20seila%20kkskk", false)
+
+createButton("TELEPORTAR E VISUALIZAR PLAYER", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Teleporte%20e%20spectar", false)
+
+createButton("PORTAL DE TELEPORTE V4", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Portal", false)
+
+createButton("ESP PLAYER RGB", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Esp%20players%20Davi%20trollz", false)
+
+createButton("FLY GUI V3", "https://raw.githubusercontent.com/XNEOFF/FlyGuiV3/main/FlyGuiV3.txt", true)
+
+createButton("VOAR COM O CARRO não é meu!!!!", "https://gist.github.com/ryzinblack/07aa2b5d7a2208dc229126395ddccb11/raw", true)
+
+createButton("CORRER RÁPIDO (também não meu!)", "https://gist.github.com/ryzinblack/2b366e62864b19599b2abccbcffe98f0/raw", true)
+
+createButton("ATRAVESSAR PAREDES (não meu!!!)", "https://gist.githubusercontent.com/ryzinblack/5f32b30bbca139d590c5de4b3188f295/raw", true)
+
+createButton("SCRIPT DE REVERSO (só pra adms", "sj(abrir so adm davi wendell felie)", false)
+
+createButton("SCRIPT DE SUPER PULO (não meu!)", "https://gist.github.com/ryzinblack/00821030b1bf833ccc165f783878343a/raw", false)
+
+createButton("SALVAR SPAWN", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Davitrollz%20salvar%20spaw%20(op%20d%2B)", false)
+
+createButton("SCRIPT DE HITBOX", "https://raw.githubusercontent.com/Davidfhdgfyyfytyttry/DAVITROLLZ-BRASIL/refs/heads/main/Davitrollz%20hitbox%20(universal)", false)
+
+
+
+-- ATALHO PARA ESCONDER COM CTRL DIREITO
+
+local mainStatus = true
+
+game:GetService("UserInputService").InputBegan:Connect(function(input, gpe)
+
+    if input.KeyCode == Enum.KeyCode.RightControl and not gpe then
+
+        mainStatus = not mainStatus
+
+        Main.Visible = mainStatus
+
+    end
+
+end)

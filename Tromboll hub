@@ -32,7 +32,7 @@ local function createGui()
 
     Logo.BackgroundTransparency = 1
 
-    Logo.Text = "minimizar⚙️"
+    Logo.Text = "⚙️"
 
     Logo.TextSize = 30
 

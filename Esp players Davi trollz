@@ -1,0 +1,121 @@
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local ESPs = {}
+local RGBConnections = {}
+local ESP_Enabled = true
+
+-- Remove todos os ESPs e desconecta RGBs
+local function removeAllESP()
+	for _, gui in pairs(ESPs) do
+		if gui and gui.Parent then
+			gui:Destroy()
+		end
+	end
+	for _, conn in pairs(RGBConnections) do
+		if conn then
+			conn:Disconnect()
+		end
+	end
+	ESPs = {}
+	RGBConnections = {}
+end
+
+-- Cria ESP com RGB rápido
+local function createESP(player)
+	if player == LocalPlayer then return end
+
+	local function onCharacter(char)
+		local head = char:WaitForChild("Head", 5)
+		if not head or not ESP_Enabled then return end
+
+		if head:FindFirstChild("ESP_GUI") then
+			head.ESP_GUI:Destroy()
+		end
+
+		local billboard = Instance.new("BillboardGui")
+		billboard.Name = "ESP_GUI"
+		billboard.Adornee = head
+		billboard.Size = UDim2.new(0, 100, 0, 20)
+		billboard.StudsOffset = Vector3.new(0, 2, 0)
+		billboard.AlwaysOnTop = true
+		billboard.Parent = head
+
+		local textLabel = Instance.new("TextLabel")
+		textLabel.Size = UDim2.new(1, 0, 1, 0)
+		textLabel.BackgroundTransparency = 1
+		textLabel.Text = player.Name
+		textLabel.TextSize = 10
+		textLabel.TextStrokeTransparency = 0.5
+		textLabel.Parent = billboard
+
+		table.insert(ESPs, billboard)
+
+		local conn = RunService.RenderStepped:Connect(function()
+			if textLabel and textLabel.Parent then
+				local t = tick() * 3
+				textLabel.TextColor3 = Color3.fromRGB(
+					math.floor((math.sin(t) + 1) * 127.5),
+					math.floor((math.sin(t + 2) + 1) * 127.5),
+					math.floor((math.sin(t + 4) + 1) * 127.5)
+				)
+			end
+		end)
+
+		table.insert(RGBConnections, conn)
+	end
+
+	if player.Character then
+		onCharacter(player.Character)
+	end
+	player.CharacterAdded:Connect(onCharacter)
+end
+
+-- Função para iniciar ESPs em todos os jogadores
+local function enableESPForAll()
+	for _, p in pairs(Players:GetPlayers()) do
+		createESP(p)
+	end
+end
+
+-- Conecta novos jogadores
+Players.PlayerAdded:Connect(function(player)
+	if ESP_Enabled then
+		createESP(player)
+	end
+end)
+
+-- Remove tudo ao trocar de personagem
+LocalPlayer.CharacterAdded:Connect(function()
+	removeAllESP()
+	if ESP_Enabled then
+		enableESPForAll()
+	end
+end)
+
+-- Inicia ESP
+enableESPForAll()
+
+-- Botão móvel para ativar/desativar
+local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
+local ToggleButton = Instance.new("TextButton")
+
+ToggleButton.Size = UDim2.new(0, 50, 0, 25)
+ToggleButton.Position = UDim2.new(0, 100, 0, 100)
+ToggleButton.Text = "ESP"
+ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Draggable = true
+ToggleButton.Active = true
+ToggleButton.Parent = ScreenGui
+
+ToggleButton.MouseButton1Click:Connect(function()
+	ESP_Enabled = not ESP_Enabled
+	ToggleButton.Text = ESP_Enabled and "ESP" or "OFF"
+	removeAllESP()
+	if ESP_Enabled then
+		enableESPForAll()
+	end
+end)

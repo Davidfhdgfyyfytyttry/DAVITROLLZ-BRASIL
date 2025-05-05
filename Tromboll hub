@@ -32,9 +32,9 @@ local function createGui()
 
     Logo.BackgroundTransparency = 1
 
-    Logo.Text = "⚙️AQUI O BOTÃO DE MINIMIZAR!⚙️"
+    Logo.Text = "minimizar!⚙️"
 
-    Logo.TextSize = 9
+    Logo.TextSize = 30
 
     Logo.TextColor3 = Color3.fromRGB(255, 255, 255)
 

@@ -1,0 +1,131 @@
+-- DAVITROLLZ GUI - Script de Teleporte com Visualizar
+local Players = game:GetService("Players")
+local Workspace = game:GetService("Workspace")
+local LocalPlayer = Players.LocalPlayer
+local Camera = Workspace.CurrentCamera
+local player = nil
+local visualizando = false
+
+-- GUI Principal
+local Gui = Instance.new("ScreenGui")
+Gui.Name = "Gui"
+Gui.Parent = gethui and gethui() or LocalPlayer:WaitForChild("PlayerGui")
+Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Botão flutuante
+local OpenButton = Instance.new("TextButton")
+OpenButton.Name = "OpenButton"
+OpenButton.Parent = Gui
+OpenButton.Size = UDim2.new(0, 60, 0, 25)
+OpenButton.Position = UDim2.new(0, 10, 0.5, -12)
+OpenButton.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+OpenButton.Text = "GUI"
+OpenButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+OpenButton.TextSize = 12
+OpenButton.Font = Enum.Font.GothamBold
+OpenButton.Active = true
+OpenButton.Draggable = true
+Instance.new("UICorner", OpenButton).CornerRadius = UDim.new(0, 6)
+
+-- GUI Principal Frame
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.Size = UDim2.new(0, 180, 0, 130)
+Main.Position = UDim2.new(0.5, -90, 0.5, -65)
+Main.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.Draggable = true
+Main.Visible = false
+Main.Parent = Gui
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 8)
+
+local Label = Instance.new("TextLabel", Main)
+Label.Size = UDim2.new(1, 0, 0, 24)
+Label.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+Label.Text = "RYZINBLACK"
+Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+Label.TextSize = 11
+Label.Font = Enum.Font.GothamBold
+Instance.new("UICorner", Label).CornerRadius = UDim.new(0, 8)
+
+local Box = Instance.new("TextBox", Main)
+Box.Size = UDim2.new(0.85, 0, 0, 22)
+Box.Position = UDim2.new(0.075, 0, 0.35, 0)
+Box.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
+Box.PlaceholderText = "Nome do player"
+Box.TextColor3 = Color3.fromRGB(255, 255, 255)
+Box.TextSize = 11
+Box.Font = Enum.Font.GothamSemibold
+Instance.new("UICorner", Box).CornerRadius = UDim.new(0, 6)
+
+local Button = Instance.new("TextButton", Main)
+Button.Size = UDim2.new(0.85, 0, 0, 22)
+Button.Position = UDim2.new(0.075, 0, 0.62, 0)
+Button.BackgroundColor3 = Color3.fromRGB(0, 120, 215)
+Button.Text = "Teleportar"
+Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+Button.TextSize = 11
+Button.Font = Enum.Font.GothamBold
+Instance.new("UICorner", Button).CornerRadius = UDim.new(0, 6)
+
+local ViewButton = Instance.new("TextButton", Main)
+ViewButton.Size = UDim2.new(0.85, 0, 0, 22)
+ViewButton.Position = UDim2.new(0.075, 0, 0.8, 0)
+ViewButton.BackgroundColor3 = Color3.fromRGB(120, 60, 255)
+ViewButton.Text = "Visualizar"
+ViewButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ViewButton.TextSize = 11
+ViewButton.Font = Enum.Font.GothamBold
+Instance.new("UICorner", ViewButton).CornerRadius = UDim.new(0, 6)
+
+-- Abrir/Fechar GUI
+OpenButton.MouseButton1Click:Connect(function()
+    Main.Visible = not Main.Visible
+end)
+
+-- Função para procurar o jogador pelo nome
+local function getPlayer(name)
+    local lowerName = string.lower(name)
+    for _, p in pairs(Players:GetPlayers()) do
+        if string.find(string.lower(p.Name), lowerName) or string.find(string.lower(p.DisplayName), lowerName) then
+            return p
+        end
+    end
+end
+
+Box.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local found = getPlayer(Box.Text)
+        if found then
+            player = found
+            Box.Text = player.Name
+        else
+            Box.Text = "Player não encontrado"
+            player = nil
+        end
+    end
+end)
+
+Button.MouseButton1Click:Connect(function()
+    if player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        LocalPlayer.Character:MoveTo(player.Character.HumanoidRootPart.Position)
+    else
+        warn("Jogador inválido")
+    end
+end)
+
+ViewButton.MouseButton1Click:Connect(function()
+    if not player then return end
+    local targetChar = player.Character
+    if targetChar and targetChar:FindFirstChild("Humanoid") then
+        visualizando = not visualizando
+        if visualizando then
+            Camera.CameraSubject = targetChar.Humanoid
+            ViewButton.Text = "Parar Visão"
+        else
+            Camera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+            ViewButton.Text = "Visualizar"
+        end
+    end
+end)

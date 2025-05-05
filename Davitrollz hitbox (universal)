@@ -1,0 +1,110 @@
+-- Criar Gui--davi trollz 
+local ScreenGui = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local ToggleButton = Instance.new("TextButton")
+local CloseButton = Instance.new("TextButton")
+local ButtonCorner1 = Instance.new("UICorner")
+local ButtonCorner2 = Instance.new("UICorner")
+
+-- Configurar GUI
+ScreenGui.Name = "HitboxGui"
+ScreenGui.Parent = game.CoreGui
+
+Main.Name = "Main"
+Main.Parent = ScreenGui
+Main.BackgroundColor3 = Color3.fromRGB(0, 85, 255)
+Main.BackgroundTransparency = 0.25
+Main.Position = UDim2.new(0.35, 0, 0.4, 0)
+Main.Size = UDim2.new(0, 250, 0, 100)
+Main.Active = true
+Main.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.Parent = Main
+
+Title.Name = "Title"
+Title.Parent = Main
+Title.BackgroundTransparency = 1
+Title.Position = UDim2.new(0, 0, 0, 5)
+Title.Size = UDim2.new(1, 0, 0, 20)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "RYZIN HITBOX"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextScaled = true
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = Main
+ToggleButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Position = UDim2.new(0.1, 0, 0.4, 0)
+ToggleButton.Size = UDim2.new(0.8, 0, 0, 30)
+ToggleButton.Font = Enum.Font.GothamBold
+ToggleButton.Text = "Ativar Hitbox"
+ToggleButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.TextSize = 18
+
+ButtonCorner1.CornerRadius = UDim.new(0, 8)
+ButtonCorner1.Parent = ToggleButton
+
+CloseButton.Name = "CloseButton"
+CloseButton.Parent = Main
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.Position = UDim2.new(1, -25, 0, 5)
+CloseButton.Size = UDim2.new(0, 20, 0, 20)
+CloseButton.Font = Enum.Font.GothamBlack
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.TextSize = 14
+
+ButtonCorner2.CornerRadius = UDim.new(1, 0)
+ButtonCorner2.Parent = CloseButton
+
+-- Variáveis
+local headSize = 10
+local enabled = false
+local localPlayer = game.Players.LocalPlayer
+
+-- Função para aplicar hitbox em todos, menos você
+local function updateHitbox()
+	for _, player in pairs(game.Players:GetPlayers()) do
+		if player ~= localPlayer then
+			local char = player.Character
+			if char and char:FindFirstChild("HumanoidRootPart") then
+				local hrp = char.HumanoidRootPart
+				pcall(function()
+					if enabled then
+						hrp.Size = Vector3.new(headSize, headSize, headSize)
+						hrp.Transparency = 0.7
+						hrp.BrickColor = BrickColor.new("Really blue")
+						hrp.Material = Enum.Material.Neon
+						hrp.CanCollide = false
+					else
+						hrp.Size = Vector3.new(2, 2, 1)
+						hrp.Transparency = 1
+						hrp.Material = Enum.Material.Plastic
+						hrp.CanCollide = true
+					end
+				end)
+			end
+		end
+	end
+end
+
+-- Atualização constante
+game:GetService("RunService").RenderStepped:Connect(function()
+	updateHitbox()
+end)
+
+-- Botão de ativar/desativar
+ToggleButton.MouseButton1Click:Connect(function()
+	enabled = not enabled
+	ToggleButton.Text = enabled and "Desativar Hitbox" or "Ativar Hitbox"
+end)
+
+-- Botão de fechar
+CloseButton.MouseButton1Click:Connect(function()
+	enabled = false
+	updateHitbox()
+	ScreenGui:Destroy()
+end)

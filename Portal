@@ -1,0 +1,122 @@
+-- Criar GUI
+local screenGui = Instance.new("ScreenGui", game.CoreGui)
+screenGui.Name = "PortalGui"
+
+local button = Instance.new("TextButton", screenGui)
+button.Size = UDim2.new(0, 50, 0, 50)
+button.Position = UDim2.new(1, -60, 1, -60)
+button.Text = "🚪"
+button.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+button.TextColor3 = Color3.new(1, 1, 1)
+button.TextScaled = true
+button.BorderSizePixel = 0
+button.BackgroundTransparency = 0.2
+button.Name = "PortalButton"
+
+local closeButton = Instance.new("TextButton", screenGui)
+closeButton.Size = UDim2.new(0, 30, 0, 30)
+closeButton.Position = UDim2.new(1, -35, 1, -120)
+closeButton.Text = "❌"
+closeButton.BackgroundColor3 = Color3.fromRGB(100, 0, 0)
+closeButton.TextColor3 = Color3.new(1, 1, 1)
+closeButton.TextScaled = true
+closeButton.BorderSizePixel = 0
+closeButton.BackgroundTransparency = 0.2
+closeButton.Name = "CloseButton"
+
+closeButton.MouseButton1Click:Connect(function()
+	screenGui:Destroy()
+	for _, p in pairs(getgenv().portals or {}) do
+		if p and p:IsA("Part") then p:Destroy() end
+	end
+	getgenv().portals = {}
+end)
+
+-- Variáveis
+getgenv().portals = getgenv().portals or {}
+getgenv().lastTP = 0
+local cooldown = 1.5
+
+-- Cores
+local cores = {
+	Color3.fromRGB(255, 0, 0),    -- Vermelho
+	Color3.fromRGB(0, 0, 255),    -- Azul
+	Color3.fromRGB(0, 255, 0),    -- Verde
+	Color3.fromRGB(255, 255, 0),  -- Amarelo
+}
+
+-- Criar portal
+local function createPortal(cor, cframe)
+	local part = Instance.new("Part")
+	part.Size = Vector3.new(4, 6, 1)
+	part.Anchored = true
+	part.CanCollide = false
+	part.Material = Enum.Material.Neon
+	part.Color = cor
+	part.CFrame = cframe
+	part.Name = "Portal"
+	part.Parent = workspace
+
+	-- Adiciona rotação visual
+	local attachment = Instance.new("Attachment", part)
+	local trail = Instance.new("ParticleEmitter", attachment)
+	trail.Texture = "rbxassetid://243098098"
+	trail.Color = ColorSequence.new(cor)
+	trail.LightEmission = 1
+	trail.Size = NumberSequence.new(1)
+	trail.Rate = 5
+	trail.Speed = NumberRange.new(0)
+	trail.Lifetime = NumberRange.new(1)
+	trail.Rotation = NumberRange.new(0, 360)
+	trail.RotSpeed = NumberRange.new(100)
+
+	return part
+end
+
+-- Conectar teleportes
+local function conectarPortais(char)
+	for _, portal in pairs(getgenv().portals) do
+		for _, conn in pairs(getconnections(portal.Touched)) do
+			conn:Disconnect()
+		end
+	end
+
+	local hrp = char:WaitForChild("HumanoidRootPart")
+	local total = #getgenv().portals
+
+	if total >= 2 then
+		for i = 1, total do
+			local atual = getgenv().portals[i]
+			local proximo = getgenv().portals[(i % total) + 1]
+
+			atual.Touched:Connect(function(hit)
+				if hit:IsDescendantOf(char) and tick() - getgenv().lastTP >= cooldown then
+					getgenv().lastTP = tick()
+					hrp.CFrame = proximo.CFrame + Vector3.new(0, 5, 0)
+				end
+			end)
+		end
+	end
+end
+
+-- Clique no botão 🚪
+button.MouseButton1Click:Connect(function()
+	local plr = game.Players.LocalPlayer
+	local char = plr.Character or plr.CharacterAdded:Wait()
+	local hrp = char:WaitForChild("HumanoidRootPart")
+
+	if #getgenv().portals < 4 then
+		local index = #getgenv().portals + 1
+		local frente = hrp.CFrame * CFrame.new(0, 0, -10)
+		local portal = createPortal(cores[index], frente)
+		table.insert(getgenv().portals, portal)
+		print("Portal " .. index .. " criado!")
+		conectarPortais(char)
+	else
+		for _, p in pairs(getgenv().portals) do
+			if p and p:IsA("Part") then p:Destroy() end
+		end
+		getgenv().portals = {}
+		print("Portais removidos!")
+	end
+end)

@@ -1,0 +1,83 @@
+-- Davi trollz GUI - Spawn Marker com botão X
+local player = game.Players.LocalPlayer
+local spawnPos = nil
+
+-- GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "SpawnGui"
+
+local frame = Instance.new("Frame", gui)
+frame.BackgroundColor3 = Color3.fromRGB(0, 85, 255)
+frame.BackgroundTransparency = 0.3
+frame.Position = UDim2.new(0.05, 0, 0.3, 0)
+frame.Size = UDim2.new(0, 180, 0, 150)
+frame.Active = true
+frame.Draggable = true
+frame.Name = "MainFrame"
+
+local corner = Instance.new("UICorner", frame)
+corner.CornerRadius = UDim.new(0, 12)
+
+-- Botão X
+local closeBtn = Instance.new("TextButton", frame)
+closeBtn.Size = UDim2.new(0, 25, 0, 25)
+closeBtn.Position = UDim2.new(1, -30, 0, 5)
+closeBtn.Text = "X"
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 18
+
+local cornerX = Instance.new("UICorner", closeBtn)
+cornerX.CornerRadius = UDim.new(0, 6)
+
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)
+
+-- Botão Ativar
+local btnAtivar = Instance.new("TextButton", frame)
+btnAtivar.Text = "Ativar Spawn"
+btnAtivar.Size = UDim2.new(1, -20, 0, 35)
+btnAtivar.Position = UDim2.new(0, 10, 0, 45)
+btnAtivar.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+btnAtivar.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnAtivar.Font = Enum.Font.SourceSansBold
+btnAtivar.TextSize = 16
+
+local corner1 = Instance.new("UICorner", btnAtivar)
+corner1.CornerRadius = UDim.new(0, 10)
+
+-- Botão Desativar
+local btnDesativar = Instance.new("TextButton", frame)
+btnDesativar.Text = "Desativar Spawn"
+btnDesativar.Size = UDim2.new(1, -20, 0, 35)
+btnDesativar.Position = UDim2.new(0, 10, 0, 90)
+btnDesativar.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+btnDesativar.TextColor3 = Color3.fromRGB(255, 255, 255)
+btnDesativar.Font = Enum.Font.SourceSansBold
+btnDesativar.TextSize = 16
+
+local corner2 = Instance.new("UICorner", btnDesativar)
+corner2.CornerRadius = UDim.new(0, 10)
+
+-- Função Ativar
+btnAtivar.MouseButton1Click:Connect(function()
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hrp = char:FindFirstChild("HumanoidRootPart")
+	if hrp then
+		spawnPos = hrp.Position
+	end
+end)
+
+-- Função Desativar
+btnDesativar.MouseButton1Click:Connect(function()
+	spawnPos = nil
+end)
+
+-- Respawn no local salvo
+player.CharacterAdded:Connect(function(char)
+	if spawnPos then
+		char:WaitForChild("HumanoidRootPart").CFrame = CFrame.new(spawnPos)
+	end
+end)

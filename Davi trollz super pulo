@@ -1,0 +1,92 @@
+-- Jump Toggle GUI - Davi trollz
+
+local player = game.Players.LocalPlayer
+local humanoid = player.Character:WaitForChild("Humanoid")
+local jumpOn = false
+
+-- Criar GUI
+local gui = Instance.new("ScreenGui", game.CoreGui)
+gui.Name = "JumpToggleGUI"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 200, 0, 120)
+frame.Position = UDim2.new(0.5, -100, 0.5, -60)
+frame.BackgroundColor3 = Color3.fromRGB(0, 100, 255)
+frame.BackgroundTransparency = 0.3
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.ClipsDescendants = true
+frame.BackgroundTransparency = 0.3
+frame:SetAttribute("Corner", true)
+
+local uicorner = Instance.new("UICorner", frame)
+uicorner.CornerRadius = UDim.new(0, 12)
+
+-- Título
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, -35, 0, 25)
+title.Position = UDim2.new(0, 5, 0, 0)
+title.Text = "Controle de Pulo"
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.Gotham
+title.TextSize = 16
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+-- Botão fechar
+local closeBtn = Instance.new("TextButton", frame)
+closeBtn.Size = UDim2.new(0, 25, 0, 25)
+closeBtn.Position = UDim2.new(1, -30, 0, 0)
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.GothamBold
+closeBtn.TextSize = 14
+closeBtn.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+closeBtn.TextColor3 = Color3.new(1, 1, 1)
+Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
+
+-- Caixa de texto do pulo
+local jumpBox = Instance.new("TextBox", frame)
+jumpBox.PlaceholderText = "Altura do Pulo"
+jumpBox.Size = UDim2.new(0.9, 0, 0, 30)
+jumpBox.Position = UDim2.new(0.05, 0, 0, 35)
+jumpBox.Text = ""
+jumpBox.TextScaled = true
+jumpBox.Font = Enum.Font.Gotham
+jumpBox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+jumpBox.TextColor3 = Color3.new(0, 0, 0)
+Instance.new("UICorner", jumpBox).CornerRadius = UDim.new(0, 8)
+
+-- Botão único (toggle)
+local toggleBtn = Instance.new("TextButton", frame)
+toggleBtn.Size = UDim2.new(0.9, 0, 0, 30)
+toggleBtn.Position = UDim2.new(0.05, 0, 0, 75)
+toggleBtn.Text = "Ativar"
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 14
+toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+toggleBtn.TextColor3 = Color3.new(0, 0, 0)
+Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0, 8)
+
+-- Função do botão
+toggleBtn.MouseButton1Click:Connect(function()
+	if not jumpOn then
+		local value = tonumber(jumpBox.Text)
+		if value then
+			humanoid.UseJumpPower = true
+			humanoid.JumpPower = value
+			toggleBtn.Text = "Desativar"
+			toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+			jumpOn = true
+		end
+	else
+		humanoid.JumpPower = 50
+		toggleBtn.Text = "Ativar"
+		toggleBtn.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		jumpOn = false
+	end
+end)
+
+closeBtn.MouseButton1Click:Connect(function()
+	gui:Destroy()
+end)

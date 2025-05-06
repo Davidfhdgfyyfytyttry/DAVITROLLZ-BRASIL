@@ -1,0 +1,124 @@
+-- GUI de Voo com ajuste de velocidade, visual azul e botão de fechar
+local Player = game.Players.LocalPlayer
+local Mouse = Player:GetMouse()
+local Character = Player.Character or Player.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+
+-- Criar a GUI
+local ScreenGui = Instance.new("ScreenGui", Player:WaitForChild("PlayerGui"))
+ScreenGui.Name = "FlyGui"
+
+local Frame = Instance.new("Frame", ScreenGui)
+Frame.Size = UDim2.new(0, 220, 0, 160)
+Frame.Position = UDim2.new(0.5, -110, 0.6, -80)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 102, 204)
+Frame.BorderSizePixel = 0
+Frame.Active = true
+Frame.Draggable = true
+Frame.BackgroundTransparency = 0.1
+
+-- Canto arredondado
+local UICorner = Instance.new("UICorner", Frame)
+UICorner.CornerRadius = UDim.new(0, 12)
+
+local Title = Instance.new("TextLabel", Frame)
+Title.Size = UDim2.new(1, -40, 0, 30)
+Title.Position = UDim2.new(0, 10, 0, 5)
+Title.Text = "Painel de Voo"
+Title.TextColor3 = Color3.new(1, 1, 1)
+Title.BackgroundTransparency = 1
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 20
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local FlyButton = Instance.new("TextButton", Frame)
+FlyButton.Size = UDim2.new(1, -20, 0, 35)
+FlyButton.Position = UDim2.new(0, 10, 0, 40)
+FlyButton.Text = "Ativar Voo"
+FlyButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+FlyButton.TextColor3 = Color3.new(1, 1, 1)
+FlyButton.Font = Enum.Font.SourceSansBold
+FlyButton.TextSize = 18
+
+local FlyCorner = Instance.new("UICorner", FlyButton)
+FlyCorner.CornerRadius = UDim.new(0, 8)
+
+local SpeedBox = Instance.new("TextBox", Frame)
+SpeedBox.Size = UDim2.new(1, -20, 0, 35)
+SpeedBox.Position = UDim2.new(0, 10, 0, 85)
+SpeedBox.PlaceholderText = "Velocidade (número)"
+SpeedBox.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+SpeedBox.TextColor3 = Color3.new(1, 1, 1)
+SpeedBox.ClearTextOnFocus = false
+SpeedBox.Font = Enum.Font.SourceSans
+SpeedBox.TextSize = 18
+SpeedBox.Text = ""
+
+local SpeedCorner = Instance.new("UICorner", SpeedBox)
+SpeedCorner.CornerRadius = UDim.new(0, 8)
+
+local CloseButton = Instance.new("TextButton", Frame)
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.Text = "X"
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.TextColor3 = Color3.new(1, 1, 1)
+CloseButton.Font = Enum.Font.SourceSansBold
+CloseButton.TextSize = 20
+
+local CloseCorner = Instance.new("UICorner", CloseButton)
+CloseCorner.CornerRadius = UDim.new(0, 8)
+
+-- Lógica do voo
+local flying = false
+local speed = 50
+local bodyGyro
+local bodyVelocity
+
+local function startFly()
+	if not flying then
+		flying = true
+		bodyGyro = Instance.new("BodyGyro", HumanoidRootPart)
+		bodyVelocity = Instance.new("BodyVelocity", HumanoidRootPart)
+		bodyGyro.P = 9e4
+		bodyGyro.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+		bodyGyro.cframe = HumanoidRootPart.CFrame
+		bodyVelocity.velocity = Vector3.new(0, 0, 0)
+		bodyVelocity.maxForce = Vector3.new(9e9, 9e9, 9e9)
+		
+		game:GetService("RunService").RenderStepped:Connect(function()
+			if flying then
+				bodyGyro.CFrame = workspace.CurrentCamera.CFrame
+				bodyVelocity.Velocity = workspace.CurrentCamera.CFrame.LookVector * speed
+			end
+		end)
+	end
+end
+
+local function stopFly()
+	flying = false
+	if bodyGyro then bodyGyro:Destroy() end
+	if bodyVelocity then bodyVelocity:Destroy() end
+end
+
+-- Eventos
+FlyButton.MouseButton1Click:Connect(function()
+	if flying then
+		stopFly()
+		FlyButton.Text = "Ativar Voo"
+	else
+		startFly()
+		FlyButton.Text = "Desativar Voo"
+	end
+end)
+
+SpeedBox.FocusLost:Connect(function()
+	local value = tonumber(SpeedBox.Text)
+	if value then
+		speed = value
+	end
+end)
+
+CloseButton.MouseButton1Click:Connect(function()
+	ScreenGui:Destroy()
+end)

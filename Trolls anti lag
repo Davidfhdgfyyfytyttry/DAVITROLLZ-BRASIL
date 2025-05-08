@@ -1,0 +1,139 @@
+--[[
+ Anti Lag Trolls v1.0
+ GUI universal: Remove absolutamente tudo para rodar liso até em batata.
+]]
+
+local Gui = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local Button1 = Instance.new("TextButton")
+local Button2 = Instance.new("TextButton")
+local Button3 = Instance.new("TextButton")
+local Button4 = Instance.new("TextButton")
+local Toggle = Instance.new("TextButton")
+local neon = Color3.fromRGB(0,255,150)
+
+Gui.Name = "AntiLagTrolls"
+Gui.ResetOnSpawn = false
+Gui.Parent = game.CoreGui
+
+Main.Name = "Main"
+Main.Parent = Gui
+Main.BackgroundColor3 = Color3.new(0,0,0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.02,0,0.2,0)
+Main.Size = UDim2.new(0, 260, 0, 285)
+Main.Active = true
+Main.Draggable = true
+
+UICorner.CornerRadius = UDim.new(0,16)
+UICorner.Parent = Main
+
+Title.Name = "Title"
+Title.Parent = Main
+Title.Text = "Anti Lag Trolls"
+Title.TextColor3 = neon
+Title.Font = Enum.Font.SourceSansBold
+Title.TextSize = 20
+Title.Position = UDim2.new(0,0,0,0)
+Title.Size = UDim2.new(1,0,0,40)
+Title.BackgroundTransparency = 1
+
+local function createButton(text, yPos)
+	local btn = Instance.new("TextButton")
+	btn.Parent = Main
+	btn.Text = text
+	btn.TextColor3 = neon
+	btn.Font = Enum.Font.GothamBold
+	btn.TextSize = 14
+	btn.Size = UDim2.new(0.9, 0, 0, 35)
+	btn.Position = UDim2.new(0.05, 0, yPos, 0)
+	btn.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+	btn.BorderSizePixel = 0
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 10)
+	return btn
+end
+
+Button1 = createButton("Anti Lag Extremo (Remove Tudo)", 0.18)
+Button2 = createButton("Otimização Leve (FPS+)", 0.40)
+Button3 = createButton("Restaurar Gráficos", 0.62)
+Button4 = createButton("Turbo V2 (texturas realistas)", 0.84)
+
+Toggle.Name = "Toggle"
+Toggle.Parent = Gui
+Toggle.Text = "⚙️"
+Toggle.TextSize = 24
+Toggle.Size = UDim2.new(0, 40, 0, 40)
+Toggle.Position = UDim2.new(0, 10, 0.15, 0)
+Toggle.BackgroundColor3 = neon
+Toggle.TextColor3 = Color3.new(0,0,0)
+Toggle.Active = true
+Toggle.Draggable = true
+local corner = Instance.new("UICorner", Toggle)
+corner.CornerRadius = UDim.new(0, 10)
+
+Toggle.MouseButton1Click:Connect(function()
+	Main.Visible = not Main.Visible
+end)
+
+-- Funções
+
+local function removeTudo()
+	for _, v in pairs(workspace:GetDescendants()) do
+		if v:IsA("Decal") or v:IsA("Texture") or v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Beam") then
+			v:Destroy()
+		elseif v:IsA("BasePart") then
+			v.Material = Enum.Material.SmoothPlastic
+			v.Color = Color3.new(0.4, 0.4, 0.4)
+			v.CastShadow = false
+		elseif v:IsA("Sound") then
+			v:Destroy()
+		end
+	end
+	local lighting = game:GetService("Lighting")
+	lighting.GlobalShadows = false
+	lighting.FogEnd = math.huge
+	lighting.Brightness = 0
+	settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+	settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Low
+	settings().Rendering.ReloadAssets = false
+	workspace.Terrain.WaterWaveSize = 0
+	workspace.Terrain.WaterWaveSpeed = 0
+	workspace.Terrain.WaterReflectance = 0
+	workspace.Terrain.WaterTransparency = 1
+end
+
+local function optimizeLeve()
+	settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+	settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Low
+	settings().Rendering.ReloadAssets = false
+	local lighting = game:GetService("Lighting")
+	lighting.GlobalShadows = false
+	lighting.FogEnd = math.huge
+end
+
+local function turboV2()
+	removeTudo()
+end
+
+local function restore()
+	local lighting = game:GetService("Lighting")
+	lighting.GlobalShadows = true
+	lighting.FogEnd = 1000
+	lighting.Brightness = 2
+	settings().Rendering.QualityLevel = Enum.QualityLevel.Automatic
+	settings().Rendering.MeshPartDetailLevel = Enum.MeshPartDetailLevel.Automatic
+	settings().Rendering.ReloadAssets = true
+	workspace.Terrain.WaterWaveSize = 0.1
+	workspace.Terrain.WaterTransparency = 0.5
+	workspace.Terrain.WaterReflectance = 0.05
+	workspace.Terrain.WaterWaveSpeed = 10
+end
+
+-- Botões
+Button1.MouseButton1Click:Connect(removeTudo)
+Button2.MouseButton1Click:Connect(optimizeLeve)
+Button3.MouseButton1Click:Connect(restore)
+Button4.MouseButton1Click:Connect(turboV2)

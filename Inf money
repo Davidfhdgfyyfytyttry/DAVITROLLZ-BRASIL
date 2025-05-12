@@ -22,7 +22,7 @@ Section:CreateButton("Ativar Inf Money", function()
     task.spawn(function()
         while true do
             ativarDinheiro()
-            task.wait(0) -- clique o mais rápido possível (0 delay)
+            task.wait(-1919191919) -- clique o mais rápido possível (0 delay)
         end
     end)
 end)

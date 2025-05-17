@@ -1,0 +1,139 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+
+local DaviTrollzWindow = Library:NewWindow("Davi trollz")
+
+-- Créditos
+local Credits = DaviTrollzWindow:NewSection("Créditos: TGMANKASKE")
+
+-- Utilitários
+local Utilitarios = DaviTrollzWindow:NewSection("Utilitários")
+
+Utilitarios:CreateToggle("Auto Passar", function(enabled)
+    _G.GetWins = enabled
+    while _G.GetWins do
+        wait()
+        for _, direction in ipairs({"Left", "Right", "Forward"}) do
+            local args = {[1] = direction}
+            game:GetService("ReplicatedStorage")
+                :WaitForChild("Gameplay")
+                :WaitForChild("Core")
+                :WaitForChild("Default")
+                :WaitForChild("Remotes")
+                :WaitForChild("Pass")
+                :InvokeServer(unpack(args))
+        end
+    end
+end)
+
+Utilitarios:CreateToggle("Cronômetro", function(enabled)
+    if enabled then
+        -- Ativar painel
+        if game.CoreGui:FindFirstChild("CheatPanel") then
+            game.CoreGui:FindFirstChild("CheatPanel"):Destroy()
+        end
+
+        local function criarUICorner(tamanho, pai)
+            local ui = Instance.new("UICorner")
+            ui.CornerRadius = UDim.new(0, tamanho)
+            ui.Parent = pai
+        end
+
+        local gui = Instance.new("ScreenGui", game.CoreGui)
+        gui.Name = "CheatPanel"
+
+        local frame = Instance.new("Frame")
+        frame.Size = UDim2.new(0, 175, 0, 175)
+        frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+        frame.AnchorPoint = Vector2.new(0.5, 0.5)
+        frame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+        frame.BorderSizePixel = 0.2
+        frame.Active = true
+        frame.Draggable = true
+        frame.Parent = gui
+
+        local top = Instance.new("TextLabel")
+        top.Size = UDim2.new(1, 0, 0, 20)
+        top.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        top.Text = "By: @Davitrollz"
+        top.TextSize = 15
+        top.TextColor3 = Color3.new(1, 1, 1)
+        top.Font = Enum.Font.Code
+        top.Parent = frame
+
+        local close = Instance.new("TextButton")
+        close.Size = UDim2.new(1, 0, 0, 20)
+        close.Position = UDim2.new(0, 0, 1, -20)
+        close.BackgroundColor3 = Color3.fromRGB(150, 0, 0)
+        close.BorderSizePixel = 0.2
+        close.Text = "CLICK TO CLOSE"
+        close.TextSize = 15
+        close.TextColor3 = Color3.new(1, 1, 1)
+        close.Font = Enum.Font.Code
+        close.Parent = frame
+
+        close.MouseButton1Click:Connect(function()
+            if game.CoreGui:FindFirstChild("CheatPanel") then
+                game.CoreGui:FindFirstChild("CheatPanel"):Destroy()
+            end
+        end)
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 0.5, 0)
+        label.Position = UDim2.new(0, 0, 0.5, -50)
+        label.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+        label.BorderSizePixel = 0.2
+        label.Text = "tiktok: @Davitrollz,"
+        label.TextScaled = true
+        label.TextColor3 = Color3.new(1, 1, 1)
+        label.Font = Enum.Font.Code
+        label.Parent = frame
+
+        criarUICorner(20, frame)
+        criarUICorner(20, top)
+        criarUICorner(30, label)
+
+        workspace.Bombs.ChildAdded:Connect(function(bomb)
+            if bomb:FindFirstChild("Highlight") then
+                while bomb.Parent do
+                    local hl = bomb:FindFirstChild("Highlight")
+                    if hl then
+                        label.Text = string.format("%.3f", hl.FillTransparency - 0.5)
+                        if hl.FillTransparency <= 0.5 then
+                            label.Text = "Explodiu!"
+                            game:GetService("ReplicatedStorage")
+                                :WaitForChild("Rounds")
+                                :WaitForChild("Core")
+                                :WaitForChild("Default")
+                                :WaitForChild("Remotes")
+                                :WaitForChild("Pass")
+                                :InvokeServer("Forward")
+                        end
+                    end
+                    task.wait()
+                end
+            end
+        end)
+    else
+        if game.CoreGui:FindFirstChild("CheatPanel") then
+            game.CoreGui:FindFirstChild("CheatPanel"):Destroy()
+        end
+    end
+end)
+
+-- Redes Sociais
+local Redes = DaviTrollzWindow:NewSection("Redes Sociais")
+
+Redes:CreateButton("TikTok @davitrollz", function()
+    setclipboard("https://www.tiktok.com/@davitrollz?_t=ZM-8wRVrwPcSmM&_r=1")
+    print("TikTok copiado!")
+end)
+
+Redes:CreateButton("Discord", function()
+    setclipboard("discord.gg/be8mP3QR5w")
+    print("Link do Discord copiado!")
+end)
+
+Redes:CreateButton("YouTube", function()
+    setclipboard("https://www.youtube.com/@TGMANKASKE")
+    print("Link do YouTube copiado!")
+end)

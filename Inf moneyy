@@ -1,0 +1,29 @@
+local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
+local Window = Library:NewWindow("Davi trollz")
+
+local Tab = Window:NewSection("Credits: DAVITROLLZ")
+
+Tab:CreateToggle("Inf. Money", function(no)
+_G.GetWins = no
+spawn(function()
+    while _G.GetWins == true do
+        wait()
+
+        local args1 = { "hello" }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("DigEvent"):FireServer(unpack(args1))
+
+        local args2 = { [1] = 8 }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinPrizeEvent"):FireServer(unpack(args2))
+
+        local args3 = { [1] = 8 }
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("SpinPrizeEvent"):FireServer(unpack(args3))
+    end
+end)
+end)
+
+local Tab = Window:NewSection("Links")
+
+Tab:CreateButton("TikTok", function()
+    setclipboard("https://www.tiktok.com/@davitrollz?_t=ZM-8wQ3k0nMteP&_r=1")
+    toclipboard("https://www.tiktok.com/@davitrollz?_t=ZM-8wQ3k0nMteP&_r=1")
+end)

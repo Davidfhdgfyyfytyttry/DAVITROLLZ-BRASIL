@@ -1,0 +1,111 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local camera = workspace.CurrentCamera
+
+-- Criação da UI
+local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+gui.Name = "SpectateUI"
+
+local frame = Instance.new("Frame", gui)
+frame.Size = UDim2.new(0, 220, 0, 350)
+frame.Position = UDim2.new(0, 20, 0.5, -175)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 30)
+title.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+title.Text = "Spectar / Teleportar"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+
+local dropDown = Instance.new("ScrollingFrame", frame)
+dropDown.Size = UDim2.new(1, 0, 1, -60)
+dropDown.Position = UDim2.new(0, 0, 0, 40)
+dropDown.CanvasSize = UDim2.new(0, 0, 0, 0)
+dropDown.ScrollBarThickness = 6
+dropDown.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+
+local stopButton = Instance.new("TextButton", frame)
+stopButton.Size = UDim2.new(1, 0, 0, 20)
+stopButton.Position = UDim2.new(0, 0, 1, -20)
+stopButton.Text = "Parar Spectate"
+stopButton.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+stopButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+stopButton.Font = Enum.Font.SourceSansBold
+stopButton.TextSize = 16
+
+-- Função para spectar um jogador
+local function spectate(targetPlayer)
+	if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("Humanoid") then
+		camera.CameraSubject = targetPlayer.Character:FindFirstChild("Humanoid")
+	end
+end
+
+-- Função para teletransportar até o jogador
+local function teleportTo(targetPlayer)
+	if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		local char = LocalPlayer.Character
+		if char and char:FindFirstChild("HumanoidRootPart") then
+			char:MoveTo(targetPlayer.Character.HumanoidRootPart.Position + Vector3.new(2, 0, 2))
+		end
+	end
+end
+
+-- Parar o spectate e voltar ao personagem
+stopButton.MouseButton1Click:Connect(function()
+	if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+		camera.CameraSubject = LocalPlayer.Character.Humanoid
+	end
+end)
+
+-- Atualiza a lista de jogadores
+local function updatePlayerList()
+	dropDown:ClearAllChildren()
+	local y = 0
+	for _, player in pairs(Players:GetPlayers()) do
+		if player ~= LocalPlayer then
+			local container = Instance.new("Frame", dropDown)
+			container.Size = UDim2.new(1, -6, 0, 60)
+			container.Position = UDim2.new(0, 3, 0, y)
+			container.BackgroundTransparency = 1
+
+			local spectateBtn = Instance.new("TextButton", container)
+			spectateBtn.Size = UDim2.new(1, 0, 0, 28)
+			spectateBtn.Position = UDim2.new(0, 0, 0, 0)
+			spectateBtn.Text = "Spectar: " .. player.Name
+			spectateBtn.BackgroundColor3 = Color3.fromRGB(100, 100, 255)
+			spectateBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+			spectateBtn.Font = Enum.Font.SourceSans
+			spectateBtn.TextSize = 18
+
+			spectateBtn.MouseButton1Click:Connect(function()
+				spectate(player)
+			end)
+
+			local teleportBtn = Instance.new("TextButton", container)
+			teleportBtn.Size = UDim2.new(1, 0, 0, 28)
+			teleportBtn.Position = UDim2.new(0, 0, 0, 30)
+			teleportBtn.Text = "Teleportar até: " .. player.Name
+			teleportBtn.BackgroundColor3 = Color3.fromRGB(100, 255, 100)
+			teleportBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+			teleportBtn.Font = Enum.Font.SourceSans
+			teleportBtn.TextSize = 18
+
+			teleportBtn.MouseButton1Click:Connect(function()
+				teleportTo(player)
+			end)
+
+			y = y + 64
+		end
+	end
+	dropDown.CanvasSize = UDim2.new(0, 0, 0, y)
+end
+
+Players.PlayerAdded:Connect(updatePlayerList)
+Players.PlayerRemoving:Connect(updatePlayerList)
+
+updatePlayerList()

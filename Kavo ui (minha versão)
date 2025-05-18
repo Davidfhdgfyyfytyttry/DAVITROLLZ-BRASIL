@@ -1,0 +1,119 @@
+local MainUI = Instance.new("ScreenGui")
+local Main = Instance.new("Frame")
+local UICorner = Instance.new("UICorner")
+local MainHeader = Instance.new("Frame")
+local UICorner_2 = Instance.new("UICorner")
+local Title = Instance.new("TextLabel")
+local close = Instance.new("ImageButton")
+local minimize = Instance.new("ImageButton")
+
+MainUI.Name = "MainUI"
+MainUI.Parent = game:GetService("CoreGui")
+
+Main.Name = "Main"
+Main.Parent = MainUI
+Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.5, -262, 0.5, -159) -- Centralizado
+Main.Size = UDim2.new(0, 525, 0, 318)
+
+UICorner.CornerRadius = UDim.new(0, 6)
+UICorner.Parent = Main
+
+MainHeader.Name = "MainHeader"
+MainHeader.Parent = Main
+MainHeader.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+MainHeader.BorderSizePixel = 0
+MainHeader.Size = UDim2.new(0, 525, 0, 32)
+
+UICorner_2.CornerRadius = UDim.new(0, 6)
+UICorner_2.Parent = MainHeader
+
+Title.Name = "Title"
+Title.Parent = MainHeader
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1.000
+Title.Size = UDim2.new(1, 0, 1, 0)
+Title.Font = Enum.Font.GothamBold
+Title.Text = "Seu Menu Kavo Editado"
+Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+Title.TextSize = 14.000
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Position = UDim2.new(0.02, 0, 0, 0)
+
+close.Name = "Close"
+close.Parent = MainHeader
+close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+close.BackgroundTransparency = 1.000
+close.Position = UDim2.new(0.96, 0, 0.2, 0)
+close.Size = UDim2.new(0, 20, 0, 20)
+close.Image = "rbxassetid://7072706663"
+close.ZIndex = 10
+
+minimize.Name = "Minimize"
+minimize.Parent = MainHeader
+minimize.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+minimize.BackgroundTransparency = 1
+minimize.Position = UDim2.new(0.92, 0, 0.2, 0)
+minimize.Size = UDim2.new(0, 20, 0, 20)
+minimize.Image = "rbxassetid://7072725342" -- ícone de minimizar
+minimize.ZIndex = 10
+
+-- Fechar o menu
+close.MouseButton1Click:Connect(function()
+	MainUI:Destroy()
+end)
+
+-- Minimizar/Restaurar
+local isMinimized = false
+local originalSize = Main.Size
+
+minimize.MouseButton1Click:Connect(function()
+	if not isMinimized then
+		Main:TweenSize(UDim2.new(0, 525, 0, 40), "Out", "Quad", 0.25, true)
+	else
+		Main:TweenSize(originalSize, "Out", "Quad", 0.25, true)
+	end
+	isMinimized = not isMinimized
+end)
+
+-- Função de arrastar
+local function DraggingEnabled(topbarobject, mainobject)
+	local dragging = false
+	local dragInput, mousePos, framePos
+
+	topbarobject.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			mousePos = input.Position
+			framePos = mainobject.Position
+
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	topbarobject.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	game:GetService("UserInputService").InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			local delta = input.Position - mousePos
+			mainobject.Position = UDim2.new(
+				framePos.X.Scale,
+				framePos.X.Offset + delta.X,
+				framePos.Y.Scale,
+				framePos.Y.Offset + delta.Y
+			)
+		end
+	end)
+end
+
+-- Ativar arraste
+DraggingEnabled(MainHeader, Main)

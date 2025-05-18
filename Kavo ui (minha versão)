@@ -1,119 +1,297 @@
-local MainUI = Instance.new("ScreenGui")
-local Main = Instance.new("Frame")
+-- Base simples estilo Kavo com seu visual, usando apenas Roblox Gui API
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "FlyTrollzUI"
+ScreenGui.Parent = game:GetService("CoreGui")
+
+local Window = Instance.new("Frame")
+Window.Name = "Window"
+Window.Size = UDim2.new(0, 525, 0, 350)
+Window.Position = UDim2.new(0.5, -262, 0.5, -175)
+Window.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+Window.BorderSizePixel = 0
+Window.Parent = ScreenGui
+Window.Active = true
+Window.Draggable = true
+
 local UICorner = Instance.new("UICorner")
-local MainHeader = Instance.new("Frame")
-local UICorner_2 = Instance.new("UICorner")
-local Title = Instance.new("TextLabel")
-local close = Instance.new("ImageButton")
-local minimize = Instance.new("ImageButton")
-
-MainUI.Name = "MainUI"
-MainUI.Parent = game:GetService("CoreGui")
-
-Main.Name = "Main"
-Main.Parent = MainUI
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Main.BorderSizePixel = 0
-Main.Position = UDim2.new(0.5, -262, 0.5, -159) -- Centralizado
-Main.Size = UDim2.new(0, 525, 0, 318)
-
 UICorner.CornerRadius = UDim.new(0, 6)
-UICorner.Parent = Main
+UICorner.Parent = Window
 
-MainHeader.Name = "MainHeader"
-MainHeader.Parent = Main
-MainHeader.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-MainHeader.BorderSizePixel = 0
-MainHeader.Size = UDim2.new(0, 525, 0, 32)
+-- Header
+local Header = Instance.new("Frame")
+Header.Name = "Header"
+Header.Size = UDim2.new(1, 0, 0, 32)
+Header.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+Header.Parent = Window
 
-UICorner_2.CornerRadius = UDim.new(0, 6)
-UICorner_2.Parent = MainHeader
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 6)
+HeaderCorner.Parent = Header
 
-Title.Name = "Title"
-Title.Parent = MainHeader
-Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-Title.BackgroundTransparency = 1.000
-Title.Size = UDim2.new(1, 0, 1, 0)
+local Title = Instance.new("TextLabel")
+Title.Text = "Fly Trollz - Spectate"
 Title.Font = Enum.Font.GothamBold
-Title.Text = "Seu Menu Kavo Editado"
+Title.TextSize = 14
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.TextSize = 14.000
-Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+Title.Size = UDim2.new(1, -60, 1, 0)
 Title.Position = UDim2.new(0.02, 0, 0, 0)
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = Header
 
-close.Name = "Close"
-close.Parent = MainHeader
-close.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-close.BackgroundTransparency = 1.000
-close.Position = UDim2.new(0.96, 0, 0.2, 0)
-close.Size = UDim2.new(0, 20, 0, 20)
-close.Image = "rbxassetid://7072706663"
-close.ZIndex = 10
+local CloseButton = Instance.new("ImageButton")
+CloseButton.Image = "rbxassetid://7072706663"
+CloseButton.BackgroundTransparency = 1
+CloseButton.Size = UDim2.new(0, 20, 0, 20)
+CloseButton.Position = UDim2.new(0.95, 0, 0.15, 0)
+CloseButton.Parent = Header
+CloseButton.ZIndex = 10
 
-minimize.Name = "Minimize"
-minimize.Parent = MainHeader
-minimize.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-minimize.BackgroundTransparency = 1
-minimize.Position = UDim2.new(0.92, 0, 0.2, 0)
-minimize.Size = UDim2.new(0, 20, 0, 20)
-minimize.Image = "rbxassetid://7072725342" -- ícone de minimizar
-minimize.ZIndex = 10
-
--- Fechar o menu
-close.MouseButton1Click:Connect(function()
-	MainUI:Destroy()
+CloseButton.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
 end)
 
--- Minimizar/Restaurar
-local isMinimized = false
-local originalSize = Main.Size
+-- Tabs container
+local TabsFrame = Instance.new("Frame")
+TabsFrame.Name = "TabsFrame"
+TabsFrame.Size = UDim2.new(0, 120, 1, -32)
+TabsFrame.Position = UDim2.new(0, 0, 0, 32)
+TabsFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+TabsFrame.Parent = Window
 
-minimize.MouseButton1Click:Connect(function()
-	if not isMinimized then
-		Main:TweenSize(UDim2.new(0, 525, 0, 40), "Out", "Quad", 0.25, true)
-	else
-		Main:TweenSize(originalSize, "Out", "Quad", 0.25, true)
-	end
-	isMinimized = not isMinimized
-end)
+local TabsUICorner = Instance.new("UICorner")
+TabsUICorner.CornerRadius = UDim.new(0, 6)
+TabsUICorner.Parent = TabsFrame
 
--- Função de arrastar
-local function DraggingEnabled(topbarobject, mainobject)
-	local dragging = false
-	local dragInput, mousePos, framePos
+-- Content frame (para o conteúdo da aba)
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -120, 1, -32)
+ContentFrame.Position = UDim2.new(0, 120, 0, 32)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+ContentFrame.Parent = Window
 
-	topbarobject.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-			dragging = true
-			mousePos = input.Position
-			framePos = mainobject.Position
+local ContentCorner = Instance.new("UICorner")
+ContentCorner.CornerRadius = UDim.new(0, 6)
+ContentCorner.Parent = ContentFrame
 
-			input.Changed:Connect(function()
-				if input.UserInputState == Enum.UserInputState.End then
-					dragging = false
-				end
-			end)
-		end
-	end)
+-- Sistema simples de abas
 
-	topbarobject.InputChanged:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-			dragInput = input
-		end
-	end)
+local Tabs = {}
+local CurrentTab = nil
 
-	game:GetService("UserInputService").InputChanged:Connect(function(input)
-		if input == dragInput and dragging then
-			local delta = input.Position - mousePos
-			mainobject.Position = UDim2.new(
-				framePos.X.Scale,
-				framePos.X.Offset + delta.X,
-				framePos.Y.Scale,
-				framePos.Y.Offset + delta.Y
-			)
-		end
-	end)
+local function CreateTab(name)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0, 32)
+    button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    button.Text = name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Font = Enum.Font.GothamBold
+    button.TextSize = 14
+    button.Parent = TabsFrame
+    
+    local tabContent = Instance.new("ScrollingFrame")
+    tabContent.Size = UDim2.new(1, 0, 1, 0)
+    tabContent.BackgroundTransparency = 1
+    tabContent.CanvasSize = UDim2.new(0, 0, 0, 0)
+    tabContent.ScrollBarThickness = 5
+    tabContent.Parent = ContentFrame
+    tabContent.Visible = false
+    tabContent.Name = name .. "Content"
+    
+    -- Layout para as seções
+    local layout = Instance.new("UIListLayout")
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 8)
+    layout.Parent = tabContent
+    
+    Tabs[name] = {
+        Button = button,
+        Content = tabContent,
+        Sections = {}
+    }
+    
+    button.MouseButton1Click:Connect(function()
+        if CurrentTab then
+            Tabs[CurrentTab].Content.Visible = false
+            Tabs[CurrentTab].Button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+        end
+        CurrentTab = name
+        tabContent.Visible = true
+        button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    end)
+    
+    return Tabs[name]
 end
 
--- Ativar arraste
-DraggingEnabled(MainHeader, Main)
+local function CreateSection(tab, title)
+    local sectionFrame = Instance.new("Frame")
+    sectionFrame.Size = UDim2.new(1, -20, 0, 150)
+    sectionFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    sectionFrame.Parent = tab.Content
+    sectionFrame.Name = title .. "Section"
+    
+    local sectionUICorner = Instance.new("UICorner")
+    sectionUICorner.CornerRadius = UDim.new(0, 6)
+    sectionUICorner.Parent = sectionFrame
+    
+    local sectionTitle = Instance.new("TextLabel")
+    sectionTitle.Text = title
+    sectionTitle.Font = Enum.Font.GothamBold
+    sectionTitle.TextSize = 16
+    sectionTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    sectionTitle.BackgroundTransparency = 1
+    sectionTitle.Position = UDim2.new(0, 10, 0, 5)
+    sectionTitle.Size = UDim2.new(1, -20, 0, 25)
+    sectionTitle.Parent = sectionFrame
+    
+    -- Container para os botões/dropdowns
+    local contentFrame = Instance.new("Frame")
+    contentFrame.Size = UDim2.new(1, -20, 1, -35)
+    contentFrame.Position = UDim2.new(0, 10, 0, 30)
+    contentFrame.BackgroundTransparency = 1
+    contentFrame.Parent = sectionFrame
+    
+    local layout = Instance.new("UIListLayout")
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 8)
+    layout.Parent = contentFrame
+    
+    -- Tabela para os controles
+    local controls = {}
+    
+    -- Métodos para adicionar controles
+    function controls:NewButton(text, description, callback)
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, 0, 0, 30)
+        btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 14
+        btn.Text = text
+        btn.Parent = contentFrame
+        
+        local tooltip = Instance.new("TextLabel")
+        tooltip.Text = description
+        tooltip.Font = Enum.Font.Gotham
+        tooltip.TextSize = 12
+        tooltip.TextColor3 = Color3.fromRGB(180, 180, 180)
+        tooltip.BackgroundTransparency = 1
+        tooltip.Size = UDim2.new(1, 0, 0, 14)
+        tooltip.Position = UDim2.new(0, 0, 1, 2)
+        tooltip.Parent = btn
+        
+        btn.MouseButton1Click:Connect(callback)
+        
+        return btn
+    end
+    
+    function controls:NewDropdown(text, description, options, callback)
+        local dropdownFrame = Instance.new("Frame")
+        dropdownFrame.Size = UDim2.new(1, 0, 0, 35)
+        dropdownFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        dropdownFrame.Parent = contentFrame
+        
+        local label = Instance.new("TextLabel")
+        label.Text = text
+        label.Font = Enum.Font.Gotham
+        label.TextSize = 14
+        label.TextColor3 = Color3.fromRGB(255, 255, 255)
+        label.BackgroundTransparency = 1
+        label.Position = UDim2.new(0, 5, 0, 0)
+        label.Size = UDim2.new(1, -10, 0, 20)
+        label.Parent = dropdownFrame
+        
+        local selectedText = Instance.new("TextLabel")
+        selectedText.Text = "Selecionar..."
+        selectedText.Font = Enum.Font.Gotham
+        selectedText.TextSize = 14
+        selectedText.TextColor3 = Color3.fromRGB(200, 200, 200)
+        selectedText.BackgroundTransparency = 1
+        selectedText.Position = UDim2.new(0, 5, 0, 20)
+        selectedText.Size = UDim2.new(1, -10, 0, 15)
+        selectedText.Parent = dropdownFrame
+        
+        local open = false
+        
+        local listFrame = Instance.new("ScrollingFrame")
+        listFrame.Size = UDim2.new(1, 0, 0, 0)
+        listFrame.Position = UDim2.new(0, 0, 0, 35)
+        listFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+        listFrame.BorderSizePixel = 0
+        listFrame.Visible = false
+        listFrame.Parent = dropdownFrame
+        listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+        listFrame.ScrollBarThickness = 6
+        
+        local listLayout = Instance.new("UIListLayout")
+        listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        listLayout.Parent = listFrame
+        
+        local function updateCanvasSize()
+            listFrame.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y)
+        end
+        
+        listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(updateCanvasSize)
+        
+        for i, option in ipairs(options) do
+            local optionBtn = Instance.new("TextButton")
+            optionBtn.Size = UDim2.new(1, 0, 0, 25)
+            optionBtn.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            optionBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            optionBtn.Font = Enum.Font.Gotham
+            optionBtn.TextSize = 14
+            optionBtn.Text = option
+            optionBtn.Parent = listFrame
+            
+            optionBtn.MouseButton1Click:Connect(function()
+                selectedText.Text = option
+                listFrame.Visible = false
+                open = false
+                callback(option)
+            end)
+        end
+        
+        dropdownFrame.MouseButton1Click:Connect(function()
+            open = not open
+            listFrame.Visible = open
+            if open then
+                updateCanvasSize()
+            end
+        end)
+        
+        -- Também abre/fecha ao clicar no label e no selectedText
+        label.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                open = not open
+                listFrame.Visible = open
+                if open then
+                    updateCanvasSize()
+                end
+            end
+        end)
+        selectedText.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                open = not open
+                listFrame.Visible = open
+                if open then
+                    updateCanvasSize()
+                end
+            end
+        end)
+        
+        return dropdownFrame
+    end
+    
+    tab.Sections[#tab.Sections + 1] = sectionFrame
+    
+    return controls
+end
+
+-- Criar aba e seção
+local spectarTab

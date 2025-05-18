@@ -1,7 +1,7 @@
 local Library = loadstring(Game:HttpGet("https://raw.githubusercontent.com/bloodball/-back-ups-for-libs/main/wizard"))()
 local Window = Library:NewWindow("Improved / Melhorado")
 
-local Tab = Window:NewSection("Credits: TGMANKASKE")
+local Tab = Window:NewSection("Credits: TGMANKASKE and Davitrollz")
 
 -- Variáveis de controle
 local loops = {

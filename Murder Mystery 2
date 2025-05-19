@@ -1,0 +1,135 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+
+local invisOn = false
+local speedOn = false
+local aimbotOn = false
+
+local speedValue = 50
+
+-- Função para destruir cadeira invisível criada pelo pastebin
+local function stopInvisibility()
+    local invisChair = workspace:FindFirstChild("invischair")
+    if invisChair then
+        invisChair:Destroy()
+    end
+    -- Também garante que personagem volte ao normal
+    for _, part in pairs(player.Character:GetDescendants()) do
+        if part:IsA("BasePart") or part:IsA("Decal") then
+            part.Transparency = 0
+        end
+    end
+end
+
+-- Função simples de aimbot (exemplo básico)
+local function getClosestTarget()
+    local target = nil
+    local shortestDist = math.huge
+    for _, plr in pairs(game.Players:GetPlayers()) do
+        if plr ~= player and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and plr.Character:FindFirstChild("Humanoid") and plr.Character.Humanoid.Health > 0 then
+            local dist = (plr.Character.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude
+            if dist < shortestDist then
+                shortestDist = dist
+                target = plr
+            end
+        end
+    end
+    return target
+end
+
+-- Atualiza aimbot
+spawn(function()
+    while true do
+        wait(0.03)
+        if aimbotOn and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local target = getClosestTarget()
+            if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+                local hrp = player.Character.HumanoidRootPart
+                local targetHRP = target.Character.HumanoidRootPart
+                local camera = workspace.CurrentCamera
+                -- Faz o personagem e câmera olharem pro alvo
+                hrp.CFrame = CFrame.new(hrp.Position, targetHRP.Position)
+                camera.CFrame = CFrame.new(camera.CFrame.Position, targetHRP.Position)
+            end
+        else
+            wait(0.5)
+        end
+    end
+end)
+
+local Window = Rayfield:CreateWindow({
+    Name = "Menu Murder Mystery by Davi",
+    LoadingTitle = "Carregando...",
+    LoadingSubtitle = "Rayfield Sirius",
+    ConfigurationSaving = {
+        Enabled = false,
+    },
+})
+
+local MainTab = Window:CreateTab("Principal")
+
+MainTab:CreateToggle({
+    Name = "Invisibilidade",
+    CurrentValue = false,
+    Flag = "Invis",
+    Callback = function(value)
+        invisOn = value
+        if invisOn then
+            -- Executa script do pastebin para invisibilidade
+            loadstring(game:HttpGet('https://pastebin.com/raw/3Rnd9rHf'))()
+        else
+            -- Para invisibilidade (remove cadeira e restaura transparência)
+            stopInvisibility()
+        end
+    end,
+})
+
+MainTab:CreateToggle({
+    Name = "Super Velocidade",
+    CurrentValue = false,
+    Flag = "SpeedToggle",
+    Callback = function(value)
+        speedOn = value
+        if speedOn then
+            humanoid.WalkSpeed = speedValue
+        else
+            humanoid.WalkSpeed = 16
+        end
+    end,
+})
+
+MainTab:CreateSlider({
+    Name = "Velocidade",
+    Range = {16, 150},
+    Increment = 1,
+    Suffix = "WalkSpeed",
+    CurrentValue = speedValue,
+    Flag = "SpeedValue",
+    Callback = function(value)
+        speedValue = value
+        if speedOn then
+            humanoid.WalkSpeed = speedValue
+        end
+    end,
+})
+
+MainTab:CreateToggle({
+    Name = "Aimbot",
+    CurrentValue = false,
+    Flag = "Aimbot",
+    Callback = function(value)
+        aimbotOn = value
+    end,
+})
+
+player.CharacterAdded:Connect(function(char)
+    humanoid = char:WaitForChild("Humanoid")
+    if speedOn then
+        humanoid.WalkSpeed = speedValue
+    else
+        humanoid.WalkSpeed = 16
+    end
+end)

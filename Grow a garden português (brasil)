@@ -1,0 +1,57 @@
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GRPGaming/Key-System/refs/heads/Xycer-Hub-Script/ZusumeLib(Slider)"))()
+
+local Janela = OrionLib:MakeWindow({
+    Name = "Mangekyu Script Hub",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "MinhaConfigDeScript"
+})
+
+local Guia = Janela:MakeTab({
+    Name = "Principal",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+-- Executar script externo do Pastefy
+Guia:AddButton({
+    Name = "Pegar Usuário",
+    Callback = function()
+        local sucesso, resultado = pcall(function()
+            loadstring(game:HttpGet("https://pastefy.app/wBhfmg9W/raw"))()
+        end)
+        if sucesso then
+            print("Script externo executado com sucesso.")
+        else
+            warn("Falha ao carregar o script:", resultado)
+        end
+    end
+})
+
+-- Caixa de texto para digitar entrada
+local entradaUsuario = ""
+
+Guia:AddTextbox({
+    Name = "Usuário",
+    Default = "",
+    TextDisappear = false,
+    Callback = function(Valor)
+        entradaUsuario = Valor
+    end
+})
+
+-- Botão para exibir o texto digitado
+Guia:AddButton({
+    Name = "Definir Usuário",
+    Callback = function()
+        print("Usuário digitado:", entradaUsuario)
+        OrionLib:MakeNotification({
+            Name = "Texto Digitado",
+            Content = "Usuário definido: " .. entradaUsuario,
+            Time = 4
+        })
+    end
+})
+
+-- Inicializar a interface
+OrionLib:Init()

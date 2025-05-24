@@ -1,7 +1,7 @@
 local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/GRPGaming/Key-System/refs/heads/Xycer-Hub-Script/ZusumeLib(Slider)"))()
 
 local Janela = OrionLib:MakeWindow({
-    Name = "Mangekyu Script Hub",
+    Name = "meu pau Script Hub",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "MinhaConfigDeScript"

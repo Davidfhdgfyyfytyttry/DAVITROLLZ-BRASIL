@@ -1,0 +1,164 @@
+--[[ 
+    Menu Hacks BR por Davitrollz
+    Créditos: @gabezim346 (Roblox)
+    Não remova os créditos se for compartilhar. Obrigado!
+--]]
+
+local supportedPlaceIds = {
+    [123456789] = true, -- Substitua pelo ID do jogo que você quer permitir
+}
+
+game.Players.PlayerAdded:Connect(function(player)
+    if not supportedPlaceIds[game.PlaceId] then
+        player:Kick("Este jogo não é suportado!")
+    end
+end)
+
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "MenuHacksBR"
+gui.ResetOnSpawn = false
+
+-- Janela principal
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 220, 0, 320)
+frame.Position = UDim2.new(0.3, 0, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+-- Créditos no canto inferior
+local creditLabel = Instance.new("TextLabel")
+creditLabel.Size = UDim2.new(1, 0, 0, 20)
+creditLabel.Position = UDim2.new(0, 0, 1, -20)
+creditLabel.BackgroundTransparency = 1
+creditLabel.Text = "Feito por Davitrollz :)"
+creditLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+creditLabel.TextScaled = true
+creditLabel.Parent = frame
+
+-- Botão de fechar/abrir
+local toggleBtn = Instance.new("TextButton")
+toggleBtn.Size = UDim2.new(0, 30, 0, 30)
+toggleBtn.Position = UDim2.new(1, -35, 0, 5)
+toggleBtn.Text = "X"
+toggleBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+toggleBtn.TextColor3 = Color3.new(0, 0, 0)
+toggleBtn.Parent = frame
+
+local isOpen = true
+toggleBtn.MouseButton1Click:Connect(function()
+	isOpen = not isOpen
+	frame.Visible = isOpen
+end)
+
+-- Função para criar botões
+local function criarBotao(texto, y, cor)
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -20, 0, 35)
+	btn.Position = UDim2.new(0, 10, 0, y)
+	btn.Text = texto
+	btn.BackgroundColor3 = cor
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Parent = frame
+	return btn
+end
+
+-- Criar botões
+local btnEspPeta = criarBotao("Esp Inimigos (Peta)", 40, Color3.fromRGB(255, 100, 100))
+local btnVelocidade = criarBotao("Velocidade Rápida", 80, Color3.fromRGB(100, 100, 255))
+local btnCaixa = criarBotao("Esp Caixas", 120, Color3.fromRGB(100, 255, 100))
+local btnCofre = criarBotao("Esp Cofres", 160, Color3.fromRGB(255, 255, 0))
+local btnBoneca = criarBotao("Esp Bonecas", 200, Color3.fromRGB(255, 255, 255))
+local btnInfo = criarBotao("Ajuda", 240, Color3.fromRGB(180, 180, 180))
+
+-- Botão Esp Inimigos (Peta)
+btnEspPeta.MouseButton1Click:Connect(function()
+	for _, modelo in ipairs(workspace:GetDescendants()) do
+		if modelo:IsA("Model") and (modelo.Name == "EnemyModel" or modelo.Name == "EnemyModels") then
+			if not modelo:FindFirstChildOfClass("Highlight") then
+				local hl = Instance.new("Highlight")
+				hl.FillColor = Color3.fromRGB(255, 100, 100)
+				hl.FillTransparency = 0.2
+				hl.OutlineTransparency = 1
+				hl.Parent = modelo
+			end
+		end
+	end
+end)
+
+-- Botão Velocidade
+btnVelocidade.MouseButton1Click:Connect(function()
+	local char = player.Character or player.CharacterAdded:Wait()
+	local hum = char:FindFirstChildWhichIsA("Humanoid")
+	if hum then
+		hum.WalkSpeed = 64
+	end
+end)
+
+-- Botão Esp Caixas
+btnCaixa.MouseButton1Click:Connect(function()
+	for _, parte in ipairs(workspace:GetDescendants()) do
+		if parte:IsA("BasePart") and parte.Name == "BoxBottom" then
+			if not parte:FindFirstChildOfClass("Highlight") then
+				local hl = Instance.new("Highlight")
+				hl.FillColor = Color3.fromRGB(0, 255, 0)
+				hl.FillTransparency = 0.2
+				hl.OutlineTransparency = 1
+				hl.Parent = parte
+			end
+		end
+	end
+end)
+
+-- Botão Esp Cofres
+btnCofre.MouseButton1Click:Connect(function()
+	for _, parte in ipairs(workspace:GetDescendants()) do
+		if parte:IsA("BasePart") and parte.Name == "Meshes/safe_Safe" then
+			if not parte:FindFirstChildOfClass("Highlight") then
+				local hl = Instance.new("Highlight")
+				hl.FillColor = Color3.fromRGB(255, 255, 0)
+				hl.FillTransparency = 0.2
+				hl.OutlineTransparency = 1
+				hl.Parent = parte
+			end
+		end
+	end
+end)
+
+-- Botão Esp Bonecas
+btnBoneca.MouseButton1Click:Connect(function()
+	for _, obj in ipairs(game:GetDescendants()) do
+		if obj:IsA("BasePart") and obj.Name == "DollHead" then
+			if not obj:FindFirstChildOfClass("Highlight") then
+				local hl = Instance.new("Highlight")
+				hl.FillColor = Color3.fromRGB(255, 255, 255)
+				hl.FillTransparency = 0.2
+				hl.OutlineTransparency = 1
+				hl.Parent = obj
+			end
+		end
+	end
+end)
+
+-- Botão Ajuda
+btnInfo.MouseButton1Click:Connect(function()
+	local info = Instance.new("TextLabel")
+	info.Size = UDim2.new(0.6, 0, 0.2, 0)
+	info.Position = UDim2.new(0.2, 0, 0.4, 0)
+	info.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	info.TextColor3 = Color3.new(1, 1, 1)
+	info.TextScaled = true
+	info.TextWrapped = true
+	info.Text = [[
+Quando você se esconder, a velocidade volta ao normal.
+ESP Peta some quando o inimigo some.
+ESP Caixas e Cofres reiniciam a cada fase nova.
+ESP Bonecas marca todas as cabeças de boneca.
+]]
+	info.Parent = gui
+	task.delay(5, function()
+		info:Destroy()
+	end)
+end)

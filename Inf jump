@@ -1,0 +1,71 @@
+local player = game.Players.LocalPlayer
+
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "AutoJumpToggleGui"
+gui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 160, 0, 70)
+frame.Position = UDim2.new(0.4, 0, 0.1, 0)
+frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.Parent = gui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.35, 0)
+title.Position = UDim2.new(0, 0, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Inf Jump"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.GothamBold
+title.TextScaled = true
+title.Parent = frame
+
+local subtitle = Instance.new("TextLabel")
+subtitle.Size = UDim2.new(1, 0, 0.25, 0)
+subtitle.Position = UDim2.new(0, 0, 0.35, 0)
+subtitle.BackgroundTransparency = 1
+subtitle.Text = "By Davitrollz"
+subtitle.TextColor3 = Color3.fromRGB(170, 170, 170)
+subtitle.Font = Enum.Font.Gotham
+subtitle.TextScaled = true
+subtitle.Parent = frame
+
+local button = Instance.new("TextButton")
+button.Size = UDim2.new(1, -10, 0.35, 0)
+button.Position = UDim2.new(0, 5, 0.65, 0)
+button.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+button.Text = "Ativar"
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Font = Enum.Font.Gotham
+button.TextScaled = true
+button.Parent = frame
+
+local connection
+local activated = false
+
+button.MouseButton1Click:Connect(function()
+    activated = not activated
+    button.Text = activated and "Desativar" or "Ativar"
+
+    if activated then
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local Player = Players.LocalPlayer
+        local Character = Player.Character or Player.CharacterAdded:Wait()
+        local Humanoid = Character:WaitForChild("Humanoid")
+
+        connection = RunService.Heartbeat:Connect(function()
+            if Humanoid.Jump then
+                Humanoid:ChangeState("Jumping")
+            end
+        end)
+    else
+        if connection then
+            connection:Disconnect()
+            connection = nil
+        end
+    end
+end)

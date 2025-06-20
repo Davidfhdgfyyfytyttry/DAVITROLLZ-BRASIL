@@ -1,8 +1,19 @@
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
-local Char = Player.Character or Player.CharacterAdded:Wait()
-local Root = Char:WaitForChild("HumanoidRootPart")
+local Root = nil
+
+-- Atualiza Root ao renascer
+local function updateRoot()
+	local character = Player.Character or Player.CharacterAdded:Wait()
+	local humanoidRoot = character:WaitForChild("HumanoidRootPart", 5)
+	if humanoidRoot then
+		Root = humanoidRoot
+	end
+end
+
+Player.CharacterAdded:Connect(updateRoot)
+updateRoot()
 
 -- GUI Principal
 local mainGui = Instance.new("ScreenGui", CoreGui)
@@ -26,7 +37,7 @@ title.TextColor3 = Color3.fromRGB(30, 30, 30)
 title.TextScaled = true
 title.Font = Enum.Font.GothamBold
 
--- Botão para abrir/fechar
+-- Botão "≡"
 local toggleGui = Instance.new("ScreenGui", CoreGui)
 toggleGui.Name = "ToggleWallHopUI"
 
@@ -48,7 +59,7 @@ toggleBtn.MouseButton1Click:Connect(function()
 	mainFrame.Visible = not mainFrame.Visible
 end)
 
--- Função para criar botões
+-- Criador de botões
 local function createBtn(text, posY, callback)
 	local btn = Instance.new("TextButton", mainFrame)
 	btn.Size = UDim2.new(0, 380, 0, 40)
@@ -63,7 +74,7 @@ local function createBtn(text, posY, callback)
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
 end
 
--- Botões principais
+-- Funções principais
 createBtn("Get VIP", 60, function()
 	pcall(function()
 		workspace.KillPart:Destroy()
@@ -73,11 +84,15 @@ createBtn("Get VIP", 60, function()
 end)
 
 createBtn("TP VIP", 110, function()
-	Root.CFrame = CFrame.new(-14.625, 4, -9.27)
+	if Root then
+		Root.CFrame = CFrame.new(-14.625, 4, -9.27)
+	end
 end)
 
 createBtn("TP End", 160, function()
-	Root.CFrame = CFrame.new(136.5, 374, 28.08)
+	if Root then
+		Root.CFrame = CFrame.new(136.5, 374, 28.08)
+	end
 end)
 
 -- Menu TP Player
@@ -110,6 +125,7 @@ closeBtn.TextScaled = true
 closeBtn.BorderSizePixel = 0
 Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 8)
 
+-- Botão refresh
 local refreshBtn = Instance.new("TextButton", tpGui)
 refreshBtn.Size = UDim2.new(0, 100, 0, 30)
 refreshBtn.Position = UDim2.new(1, -145, 0, 5)
@@ -121,7 +137,7 @@ refreshBtn.TextScaled = true
 refreshBtn.BorderSizePixel = 0
 Instance.new("UICorner", refreshBtn).CornerRadius = UDim.new(0, 8)
 
--- Lista de players (scrolling)
+-- Lista com rolagem
 local playerList = Instance.new("ScrollingFrame", tpGui)
 playerList.Size = UDim2.new(1, -40, 0, 200)
 playerList.Position = UDim2.new(0, 20, 0, 50)
@@ -155,14 +171,12 @@ local function updatePlayerList()
 			Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
 			btn.MouseButton1Click:Connect(function()
-				local target = p.Character and p.Character:FindFirstChild("HumanoidRootPart")
-				if target then
-					Root.CFrame = target.CFrame + Vector3.new(2, 0, 0)
+				if Root and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+					Root.CFrame = p.Character.HumanoidRootPart.CFrame + Vector3.new(2, 0, 0)
 				end
 			end)
 		end
 	end
-
 	task.wait()
 	playerList.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
 end
@@ -181,7 +195,7 @@ closeBtn.MouseButton1Click:Connect(function()
 	tpMenuOpen = false
 end)
 
--- Botão de sair
+-- Sair
 createBtn("Destroy GUI", 260, function()
 	mainGui:Destroy()
 	toggleGui:Destroy()

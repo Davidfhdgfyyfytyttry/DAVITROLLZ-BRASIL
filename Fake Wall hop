@@ -1,0 +1,130 @@
+-- Wall Hop (beta) by Davitrollz
+
+local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:WaitForChild("Humanoid")
+local rootPart = char:WaitForChild("HumanoidRootPart")
+
+-- GUI principal
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+screenGui.Name = "Wall Hop (beta)"
+screenGui.ResetOnSpawn = false
+
+-- Frame agrupado (tudo fica dentro dele)
+local mainFrame = Instance.new("Frame", screenGui)
+mainFrame.Size = UDim2.new(0, 170, 0, 140)
+mainFrame.Position = UDim2.new(0, 10, 0, 10)
+mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+mainFrame.BorderSizePixel = 0
+mainFrame.Active = true
+mainFrame.Draggable = true
+
+-- Botão de ativar/desativar
+local button = Instance.new("TextButton", mainFrame)
+button.Size = UDim2.new(1, 0, 0, 40)
+button.Position = UDim2.new(0, 0, 0, 0)
+button.Text = "Wall Hop (beta) [OFF]"
+button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+button.TextColor3 = Color3.new(1, 1, 1)
+button.Font = Enum.Font.GothamBold
+button.TextSize = 16
+button.BorderSizePixel = 0
+
+-- Caixa de velocidade
+local speedInput = Instance.new("TextBox", mainFrame)
+speedInput.Size = UDim2.new(1, 0, 0, 30)
+speedInput.Position = UDim2.new(0, 0, 0, 45)
+speedInput.PlaceholderText = "Max: 90"
+speedInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+speedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedInput.Font = Enum.Font.Gotham
+speedInput.TextSize = 16
+speedInput.BorderSizePixel = 0
+speedInput.Text = ""
+speedInput.ClearTextOnFocus = true
+speedInput.TextTransparency = 0
+
+-- Mensagem de erro
+local warningLabel = Instance.new("TextLabel", mainFrame)
+warningLabel.Size = UDim2.new(1, 0, 0, 20)
+warningLabel.Position = UDim2.new(0, 0, 0, 80)
+warningLabel.Text = ""
+warningLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+warningLabel.BackgroundTransparency = 1
+warningLabel.Font = Enum.Font.GothamBold
+warningLabel.TextSize = 14
+
+-- IB do criador
+local creditLabel = Instance.new("TextLabel", mainFrame)
+creditLabel.Size = UDim2.new(1, 0, 0, 20)
+creditLabel.Position = UDim2.new(0, 0, 0, 110)
+creditLabel.Text = "By Davi trollz"
+creditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+creditLabel.BackgroundTransparency = 1
+creditLabel.Font = Enum.Font.Gotham
+creditLabel.TextSize = 13
+
+-- Variáveis
+local enabled = false
+local cooldown = false
+local maxVelocity = 50 -- padrão
+
+-- Ativar/Desativar
+button.MouseButton1Click:Connect(function()
+	enabled = not enabled
+	button.Text = enabled and "Wall Hop (beta) [ON]" or "Wall Hop (beta) [OFF]"
+end)
+
+-- Detecta parede
+local function detectWall()
+	local rayParams = RaycastParams.new()
+	rayParams.FilterDescendantsInstances = {char}
+	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+	local directions = {
+		rootPart.CFrame.LookVector,
+		rootPart.CFrame.RightVector,
+		-rootPart.CFrame.RightVector
+	}
+
+	for _, dir in pairs(directions) do
+		local ray = workspace:Raycast(rootPart.Position, dir * 2, rayParams)
+		if ray then return true end
+	end
+
+	return false
+end
+
+-- Caixa de velocidade (entrada)
+speedInput.FocusLost:Connect(function()
+	local value = tonumber(speedInput.Text)
+	if value and value <= 90 then
+		maxVelocity = value
+		speedInput.TextTransparency = 0.4
+		speedInput.BackgroundTransparency = 0.4
+	else
+		warningLabel.Text = "Limite alcançado!"
+		task.delay(3, function()
+			warningLabel.Text = ""
+		end)
+		speedInput.Text = ""
+	end
+end)
+
+-- Loop principal
+game:GetService("RunService").RenderStepped:Connect(function()
+	if not enabled or cooldown then return end
+	if not char or not rootPart then return end
+
+	if humanoid.FloorMaterial == Enum.Material.Air and detectWall() then
+		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+
+		local upward = Vector3.new(0, math.clamp(maxVelocity, 20, 90), 0)
+		local backward = -rootPart.CFrame.LookVector * (math.clamp(maxVelocity, 20, 90) * 0.4)
+		rootPart.Velocity = upward + backward
+
+		cooldown = true
+		task.wait(0.4)
+		cooldown = false
+	end
+end)

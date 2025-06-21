@@ -11,6 +11,7 @@ local LocalPlayer = Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local CoreGui = game:GetService("CoreGui")
 local Workspace = game:GetService("Workspace")
+local UserInputService = game:GetService("UserInputService")
 
 local actionName = "slash"
 local isVoid = _G.isVoid or false
@@ -18,12 +19,15 @@ local running = false
 local attackThread = nil
 local targetName = "All Players"
 
+-- Velocidade do tapa em segundos (ex: 0.01 = 100 taps por segundo)
+local attackSpeed = 0.05
+
 local screenGui = Instance.new("ScreenGui", CoreGui)
 screenGui.Name = "AutoSlapGUI"
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 220, 0, 150)
+frame.Size = UDim2.new(0, 260, 0, 180)
 frame.Position = UDim2.new(0, 100, 0, 100)
 frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 frame.BorderSizePixel = 0
@@ -50,8 +54,18 @@ toggle.TextSize = 18
 toggle.TextColor3 = Color3.fromRGB(255,255,255)
 toggle.TextScaled = true
 
+local refreshBtn = Instance.new("TextButton", frame)
+refreshBtn.Size = UDim2.new(0, 80, 0, 26)
+refreshBtn.Position = UDim2.new(1, -90, 0, 64)
+refreshBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+refreshBtn.Text = "Refresh"
+refreshBtn.Font = Enum.Font.SourceSansBold
+refreshBtn.TextSize = 16
+refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+refreshBtn.TextScaled = true
+
 local dropdown = Instance.new("TextButton", frame)
-dropdown.Size = UDim2.new(1, -20, 0, 26)
+dropdown.Size = UDim2.new(1, -110, 0, 26)
 dropdown.Position = UDim2.new(0, 10, 0, 64)
 dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 dropdown.Text = "Alvo: Todos"
@@ -61,7 +75,7 @@ dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
 dropdown.TextScaled = true
 
 local dropdownList = Instance.new("ScrollingFrame", screenGui)
-dropdownList.Size = UDim2.new(0, 200, 0, 120)
+dropdownList.Size = UDim2.new(0, 240, 0, 120)
 dropdownList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 dropdownList.BorderSizePixel = 0
 dropdownList.Visible = false
@@ -151,15 +165,30 @@ local function refreshDropdown()
             spectate.TextScaled = true
             spectate.ZIndex = 3
 
+            local holdingSpectate = false
+
             spectate.MouseButton1Down:Connect(function()
+                holdingSpectate = true
                 if plr.Character and plr.Character:FindFirstChild("Humanoid") then
                     Workspace.CurrentCamera.CameraSubject = plr.Character:FindFirstChild("Humanoid")
                 end
             end)
 
-            spectate.MouseButton1Up:Connect(function()
-                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-                    Workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+            local function stopSpectate()
+                if holdingSpectate then
+                    holdingSpectate = false
+                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                        Workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+                    end
+                end
+            end
+
+            spectate.MouseButton1Up:Connect(stopSpectate)
+            spectate.MouseLeave:Connect(stopSpectate)
+
+            UserInputService.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    stopSpectate()
                 end
             end)
         end
@@ -167,19 +196,29 @@ local function refreshDropdown()
 end
 
 dropdown.MouseButton1Click:Connect(function()
-    refreshDropdown()
     dropdownList.Position = UDim2.new(0, dropdown.AbsolutePosition.X, 0, dropdown.AbsolutePosition.Y + dropdown.AbsoluteSize.Y)
     dropdownList.Visible = not dropdownList.Visible
 end)
 
-task.spawn(function()
-    while true do
-        if dropdownList.Visible then
-            refreshDropdown()
-        end
-        task.wait(2)
-    end
+local refreshBtn = frame:FindFirstChild("Refresh") -- Just in case
+if not refreshBtn then
+    refreshBtn = Instance.new("TextButton", frame)
+    refreshBtn.Name = "Refresh"
+    refreshBtn.Size = UDim2.new(0, 80, 0, 26)
+    refreshBtn.Position = UDim2.new(1, -90, 0, 64)
+    refreshBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+    refreshBtn.Text = "Refresh"
+    refreshBtn.Font = Enum.Font.SourceSansBold
+    refreshBtn.TextSize = 16
+    refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    refreshBtn.TextScaled = true
+end
+
+refreshBtn.MouseButton1Click:Connect(function()
+    refreshDropdown()
 end)
+
+refreshDropdown()
 
 local function ensureSecretSlapEquipped()
     local backpack = LocalPlayer:FindFirstChild("Backpack")
@@ -216,7 +255,7 @@ local function attackLoop()
                 if not running then return end
                 local pos = VoidSlap(isVoid)
                 LocalPlayer.Character.SecretSlap.Event:FireServer("slash", player.Character, pos)
-                task.wait(0.01)
+                task.wait(attackSpeed)
             end
         else
             task.wait(0.5)

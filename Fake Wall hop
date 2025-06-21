@@ -1,115 +1,120 @@
 local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
-local humanoid = char:WaitForChild("Humanoid")
-local rootPart = char:WaitForChild("HumanoidRootPart")
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoid = character:WaitForChild("Humanoid")
+local rootPart = character:WaitForChild("HumanoidRootPart")
 
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "Wall Hop (beta)"
-screenGui.ResetOnSpawn = false
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "WallHopUI"
+gui.ResetOnSpawn = false
 
-local mainFrame = Instance.new("Frame", screenGui)
-mainFrame.Size = UDim2.new(0, 170, 0, 140)
-mainFrame.Position = UDim2.new(0, 10, 0, 10)
-mainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
-mainFrame.BorderSizePixel = 0
-mainFrame.Active = true
-mainFrame.Draggable = true
+local window = Instance.new("Frame", gui)
+window.Size = UDim2.new(0, 170, 0, 140)
+window.Position = UDim2.new(0, 12, 0, 12)
+window.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+window.BorderSizePixel = 0
+window.Active = true
+window.Draggable = true
 
-local button = Instance.new("TextButton", mainFrame)
-button.Size = UDim2.new(1, 0, 0, 40)
-button.Position = UDim2.new(0, 0, 0, 0)
-button.Text = "Wall Hop (beta) [OFF]"
-button.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-button.TextColor3 = Color3.new(1, 1, 1)
-button.Font = Enum.Font.GothamBold
-button.TextSize = 16
-button.BorderSizePixel = 0
+local toggleBtn = Instance.new("TextButton", window)
+toggleBtn.Size = UDim2.new(1, 0, 0, 40)
+toggleBtn.Position = UDim2.new(0, 0, 0, 0)
+toggleBtn.Text = "WallHop (Beta) [Desligado]"
+toggleBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+toggleBtn.TextColor3 = Color3.new(1, 1, 1)
+toggleBtn.Font = Enum.Font.GothamBold
+toggleBtn.TextSize = 16
+toggleBtn.BorderSizePixel = 0
 
-local speedInput = Instance.new("TextBox", mainFrame)
-speedInput.Size = UDim2.new(1, 0, 0, 30)
-speedInput.Position = UDim2.new(0, 0, 0, 45)
-speedInput.PlaceholderText = "Max: 90"
-speedInput.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-speedInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-speedInput.Font = Enum.Font.Gotham
-speedInput.TextSize = 16
-speedInput.BorderSizePixel = 0
-speedInput.Text = ""
-speedInput.ClearTextOnFocus = true
-speedInput.TextTransparency = 0
+local speedBox = Instance.new("TextBox", window)
+speedBox.Size = UDim2.new(1, 0, 0, 30)
+speedBox.Position = UDim2.new(0, 0, 0, 45)
+speedBox.PlaceholderText = "Velocidade máxima: 90"
+speedBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+speedBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+speedBox.Font = Enum.Font.Gotham
+speedBox.TextSize = 16
+speedBox.BorderSizePixel = 0
+speedBox.Text = ""
+speedBox.ClearTextOnFocus = true
+speedBox.TextTransparency = 0
 
-local warningLabel = Instance.new("TextLabel", mainFrame)
-warningLabel.Size = UDim2.new(1, 0, 0, 20)
-warningLabel.Position = UDim2.new(0, 0, 0, 80)
-warningLabel.Text = ""
-warningLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-warningLabel.BackgroundTransparency = 1
-warningLabel.Font = Enum.Font.GothamBold
-warningLabel.TextSize = 14
+local alertLabel = Instance.new("TextLabel", window)
+alertLabel.Size = UDim2.new(1, 0, 0, 20)
+alertLabel.Position = UDim2.new(0, 0, 0, 80)
+alertLabel.Text = ""
+alertLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
+alertLabel.BackgroundTransparency = 1
+alertLabel.Font = Enum.Font.GothamBold
+alertLabel.TextSize = 14
 
-local creditLabel = Instance.new("TextLabel", mainFrame)
-creditLabel.Size = UDim2.new(1, 0, 0, 20)
-creditLabel.Position = UDim2.new(0, 0, 0, 110)
-creditLabel.Text = "By Davi trollz"
-creditLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-creditLabel.BackgroundTransparency = 1
-creditLabel.Font = Enum.Font.Gotham
-creditLabel.TextSize = 13
+local authorLabel = Instance.new("TextLabel", window)
+authorLabel.Size = UDim2.new(1, 0, 0, 20)
+authorLabel.Position = UDim2.new(0, 0, 0, 110)
+authorLabel.Text = "By Davi trollz"
+authorLabel.TextColor3 = Color3.fromRGB(220, 220, 220)
+authorLabel.BackgroundTransparency = 1
+authorLabel.Font = Enum.Font.Gotham
+authorLabel.TextSize = 13
 
-local enabled = false
-local cooldown = false
-local maxVelocity = 50
+local isActive = false
+local canHop = true
+local maxSpeed = 50
 
-button.MouseButton1Click:Connect(function()
-	enabled = not enabled
-	button.Text = enabled and "Wall Hop (beta) [ON]" or "Wall Hop (beta) [OFF]"
+toggleBtn.MouseButton1Click:Connect(function()
+	isActive = not isActive
+	if isActive then
+		toggleBtn.Text = "WallHop (Beta) [Ligado]"
+	else
+		toggleBtn.Text = "WallHop (Beta) [Desligado]"
+	end
 end)
 
-local function detectWall()
-	local rayParams = RaycastParams.new()
-	rayParams.FilterDescendantsInstances = {char}
-	rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+local function checkNearbyWall()
+	local rayCastParams = RaycastParams.new()
+	rayCastParams.FilterDescendantsInstances = {character}
+	rayCastParams.FilterType = Enum.RaycastFilterType.Blacklist
 
-	local directions = {
+	local checkDirs = {
 		rootPart.CFrame.LookVector,
 		rootPart.CFrame.RightVector,
 		-rootPart.CFrame.RightVector
 	}
 
-	for _, dir in pairs(directions) do
-		local ray = workspace:Raycast(rootPart.Position, dir * 2, rayParams)
-		if ray then return true end
+	for _, dirVec in ipairs(checkDirs) do
+		local hit = workspace:Raycast(rootPart.Position, dirVec * 2, rayCastParams)
+		if hit then
+			return true
+		end
 	end
-
 	return false
 end
 
-speedInput.FocusLost:Connect(function()
-	local value = tonumber(speedInput.Text)
-	if value and value <= 90 then
-		maxVelocity = value
-		speedInput.TextTransparency = 0.4
-		speedInput.BackgroundTransparency = 0.4
+speedBox.FocusLost:Connect(function()
+	local inputVal = tonumber(speedBox.Text)
+	if inputVal and inputVal <= 90 then
+		maxSpeed = inputVal
+		speedBox.TextTransparency = 0.4
+		speedBox.BackgroundTransparency = 0.4
 	else
-		warningLabel.Text = "Limite alcançado!"
-		task.delay(3, function()
-			warningLabel.Text = ""
+		alertLabel.Text = "Valor inválido ou acima do limite!"
+		delay(3, function()
+			alertLabel.Text = ""
 		end)
-		speedInput.Text = ""
+		speedBox.Text = ""
 	end
 end)
 
 game:GetService("RunService").RenderStepped:Connect(function()
-	if not enabled or cooldown then return end
-	if not char or not rootPart then return end
+	if not isActive or not canHop then return end
+	if not character or not rootPart then return end
 
-	if humanoid.FloorMaterial == Enum.Material.Air and detectWall() then
+	if humanoid.FloorMaterial == Enum.Material.Air and checkNearbyWall() then
 		humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
-		local upward = Vector3.new(0, math.clamp(maxVelocity, 20, 90), 0)
-		local backward = -rootPart.CFrame.LookVector * (math.clamp(maxVelocity, 20, 90) * 0.4)
-		rootPart.Velocity = upward + backward
-		cooldown = true
+		local jumpForce = Vector3.new(0, math.clamp(maxSpeed, 20, 90), 0)
+		local pushBack = -rootPart.CFrame.LookVector * (math.clamp(maxSpeed, 20, 90) * 0.4)
+		rootPart.Velocity = jumpForce + pushBack
+		canHop = false
 		task.wait(0.4)
-		cooldown = false
+		canHop = true
 	end
 end)

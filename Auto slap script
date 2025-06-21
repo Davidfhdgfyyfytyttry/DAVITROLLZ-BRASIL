@@ -1,0 +1,248 @@
+local function VoidSlap(isVoid)
+    if isVoid then
+        return Vector3.new(8.398977279663086, -999999, -5.427446365356445)
+    else
+        return Vector3.new(8.398977279663086, 2.2562765877864877e-07, -5.427446365356445)
+    end
+end
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CoreGui = game:GetService("CoreGui")
+local Workspace = game:GetService("Workspace")
+
+local actionName = "slash"
+local isVoid = _G.isVoid or false
+local running = false
+local attackThread = nil
+local targetName = "All Players"
+
+local screenGui = Instance.new("ScreenGui", CoreGui)
+screenGui.Name = "AutoSlapGUI"
+screenGui.ResetOnSpawn = false
+
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0, 220, 0, 150)
+frame.Position = UDim2.new(0, 100, 0, 100)
+frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+frame.BorderSizePixel = 0
+frame.Active = true
+frame.Draggable = true
+frame.ClipsDescendants = true
+
+local title = Instance.new("TextLabel", frame)
+title.Size = UDim2.new(1, 0, 0, 28)
+title.BackgroundTransparency = 1
+title.Text = "Auto Slap"
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 20
+title.TextColor3 = Color3.fromRGB(255,255,255)
+title.TextScaled = true
+
+local toggle = Instance.new("TextButton", frame)
+toggle.Size = UDim2.new(1, -20, 0, 26)
+toggle.Position = UDim2.new(0, 10, 0, 32)
+toggle.BackgroundColor3 = Color3.fromRGB(80, 180, 80)
+toggle.Text = "OFF"
+toggle.Font = Enum.Font.SourceSans
+toggle.TextSize = 18
+toggle.TextColor3 = Color3.fromRGB(255,255,255)
+toggle.TextScaled = true
+
+local dropdown = Instance.new("TextButton", frame)
+dropdown.Size = UDim2.new(1, -20, 0, 26)
+dropdown.Position = UDim2.new(0, 10, 0, 64)
+dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+dropdown.Text = "Alvo: Todos"
+dropdown.Font = Enum.Font.SourceSans
+dropdown.TextSize = 16
+dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+dropdown.TextScaled = true
+
+local dropdownList = Instance.new("ScrollingFrame", screenGui)
+dropdownList.Size = UDim2.new(0, 200, 0, 120)
+dropdownList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+dropdownList.BorderSizePixel = 0
+dropdownList.Visible = false
+dropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
+dropdownList.ScrollBarThickness = 6
+dropdownList.AutomaticCanvasSize = Enum.AutomaticSize.Y
+dropdownList.ScrollingDirection = Enum.ScrollingDirection.Y
+dropdownList.ZIndex = 2
+
+local credits = Instance.new("TextLabel", frame)
+credits.Size = UDim2.new(1, 0, 0, 20)
+credits.Position = UDim2.new(0, 0, 1, -20)
+credits.BackgroundTransparency = 1
+credits.Text = "By Davitrollz e By sparrowjava614"
+credits.Font = Enum.Font.SourceSansItalic
+credits.TextSize = 14
+credits.TextColor3 = Color3.fromRGB(180,180,180)
+credits.TextScaled = true
+
+local banner = Instance.new("TextLabel", screenGui)
+banner.Size = UDim2.new(0, 240, 0, 24)
+banner.Position = UDim2.new(0, 10, 0, 10)
+banner.BackgroundTransparency = 0.3
+banner.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+banner.Text = "Script melhorado por Davi Trollz"
+banner.Font = Enum.Font.SourceSansBold
+banner.TextSize = 16
+banner.TextColor3 = Color3.new(1, 1, 1)
+banner.TextStrokeTransparency = 0.5
+banner.TextScaled = true
+
+local closeBanner = Instance.new("TextButton", banner)
+closeBanner.Size = UDim2.new(0, 20, 1, 0)
+closeBanner.Position = UDim2.new(1, -24, 0, 0)
+closeBanner.BackgroundTransparency = 1
+closeBanner.Text = "X"
+closeBanner.Font = Enum.Font.SourceSansBold
+closeBanner.TextColor3 = Color3.new(1, 0, 0)
+closeBanner.TextSize = 18
+
+closeBanner.MouseButton1Click:Connect(function()
+    banner:Destroy()
+end)
+
+task.spawn(function()
+    while banner and banner.Parent do
+        local t = tick()
+        banner.TextColor3 = Color3.fromHSV((t % 5) / 5, 1, 1)
+        task.wait(0.1)
+    end
+end)
+
+local function refreshDropdown()
+    dropdownList:ClearAllChildren()
+    local allPlayers = Players:GetPlayers()
+    for i, plr in ipairs(allPlayers) do
+        if plr ~= LocalPlayer then
+            local container = Instance.new("Frame", dropdownList)
+            container.Size = UDim2.new(1, 0, 0, 26)
+            container.Position = UDim2.new(0, 0, 0, (i - 1) * 26)
+            container.BackgroundTransparency = 1
+
+            local btn = Instance.new("TextButton", container)
+            btn.Size = UDim2.new(0.65, 0, 1, 0)
+            btn.Position = UDim2.new(0, 0, 0, 0)
+            btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+            btn.Text = plr.DisplayName
+            btn.Font = Enum.Font.SourceSans
+            btn.TextSize = 16
+            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            btn.TextScaled = true
+            btn.ZIndex = 3
+            btn.MouseButton1Click:Connect(function()
+                targetName = plr.DisplayName
+                dropdown.Text = "Alvo: " .. plr.DisplayName
+                dropdownList.Visible = false
+            end)
+
+            local spectate = Instance.new("TextButton", container)
+            spectate.Size = UDim2.new(0.3, 0, 1, 0)
+            spectate.Position = UDim2.new(0.7, 4, 0, 0)
+            spectate.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+            spectate.Text = "Spectate"
+            spectate.Font = Enum.Font.SourceSansBold
+            spectate.TextSize = 14
+            spectate.TextColor3 = Color3.new(1,1,1)
+            spectate.TextScaled = true
+            spectate.ZIndex = 3
+
+            spectate.MouseButton1Down:Connect(function()
+                if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                    Workspace.CurrentCamera.CameraSubject = plr.Character:FindFirstChild("Humanoid")
+                end
+            end)
+
+            spectate.MouseButton1Up:Connect(function()
+                if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
+                    Workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+                end
+            end)
+        end
+    end
+end
+
+dropdown.MouseButton1Click:Connect(function()
+    refreshDropdown()
+    dropdownList.Position = UDim2.new(0, dropdown.AbsolutePosition.X, 0, dropdown.AbsolutePosition.Y + dropdown.AbsoluteSize.Y)
+    dropdownList.Visible = not dropdownList.Visible
+end)
+
+task.spawn(function()
+    while true do
+        if dropdownList.Visible then
+            refreshDropdown()
+        end
+        task.wait(2)
+    end
+end)
+
+local function ensureSecretSlapEquipped()
+    local backpack = LocalPlayer:FindFirstChild("Backpack")
+    local character = LocalPlayer.Character
+    if not backpack or not character then return false end
+    if character:FindFirstChild("SecretSlap") then return true end
+    if backpack:FindFirstChild("SecretSlap") then
+        backpack.SecretSlap.Parent = character
+        return true
+    end
+    ReplicatedStorage.Z:FireServer("SecretSlap")
+    for i = 1, 30 do
+        if backpack:FindFirstChild("SecretSlap") then
+            backpack.SecretSlap.Parent = character
+            return true
+        end
+        task.wait(0.1)
+    end
+    return character:FindFirstChild("SecretSlap") ~= nil
+end
+
+local function attackLoop()
+    while running do
+        if ensureSecretSlapEquipped() then
+            local targets = {}
+            for _, player in ipairs(Players:GetPlayers()) do
+                if player ~= LocalPlayer and player.Character then
+                    if targetName == "All Players" or player.DisplayName == targetName then
+                        table.insert(targets, player)
+                    end
+                end
+            end
+            for _, player in ipairs(targets) do
+                if not running then return end
+                local pos = VoidSlap(isVoid)
+                LocalPlayer.Character.SecretSlap.Event:FireServer("slash", player.Character, pos)
+                task.wait(0.01)
+            end
+        else
+            task.wait(0.5)
+        end
+    end
+end
+
+local function startAutoSlap()
+    if not running then return end
+    if attackThread and coroutine.status(attackThread) ~= "dead" then return end
+    attackThread = coroutine.create(attackLoop)
+    coroutine.resume(attackThread)
+end
+
+toggle.MouseButton1Click:Connect(function()
+    running = not running
+    toggle.Text = running and "ON" or "OFF"
+    toggle.BackgroundColor3 = running and Color3.fromRGB(180, 80, 80) or Color3.fromRGB(80, 180, 80)
+    if running then
+        startAutoSlap()
+    end
+end)
+
+LocalPlayer.CharacterAdded:Connect(function()
+    if running then
+        task.wait(1)
+        startAutoSlap()
+    end
+end)

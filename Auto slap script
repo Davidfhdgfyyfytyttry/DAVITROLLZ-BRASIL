@@ -1,269 +1,191 @@
-local function getSlapPosition(isFalling)
-    if isFalling then
-        return Vector3.new(8.4, -999999, -5.4)
-    else
-        return Vector3.new(8.4, 0, -5.4)
-    end
+local guiService = game:GetService("CoreGui")
+local players = game:GetService("Players")
+local localPlayer = players.LocalPlayer
+local rootPart = nil
+
+local function atualizarRoot()
+	local char = localPlayer.Character or localPlayer.CharacterAdded:Wait()
+	local root = char:WaitForChild("HumanoidRootPart", 5)
+	if root then rootPart = root end
 end
 
-local Players = game:GetService("Players")
-local Me = Players.LocalPlayer
-local Replicated = game:GetService("ReplicatedStorage")
-local CoreGui = game:GetService("CoreGui")
-local Camera = game:GetService("Workspace")
-local Input = game:GetService("UserInputService")
+localPlayer.CharacterAdded:Connect(atualizarRoot)
+atualizarRoot()
 
-local toggleState = false
-local selectedTarget = "Todos"
-local attackDelay = 0.05
-local voidMode = _G.isVoid or false
-local working = false
-local loopRef = nil
+local mainUI = Instance.new("ScreenGui", guiService)
+mainUI.Name = "InterfaceTopo"
 
-local gui = Instance.new("ScreenGui", CoreGui)
-gui.Name = "SlapAutoUI"
-gui.ResetOnSpawn = false
+local menuPrincipal = Instance.new("Frame", mainUI)
+menuPrincipal.Size = UDim2.new(0, 420, 0, 280)
+menuPrincipal.Position = UDim2.new(0.5, -210, 0.5, -140)
+menuPrincipal.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+menuPrincipal.BorderSizePixel = 0
+menuPrincipal.Visible = false
+menuPrincipal.Active = true
+menuPrincipal.Draggable = true
+Instance.new("UICorner", menuPrincipal).CornerRadius = UDim.new(0, 16)
 
-local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 260, 0, 180)
-main.Position = UDim2.new(0, 100, 0, 100)
-main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
-main.BorderSizePixel = 0
-main.Active = true
-main.Draggable = true
-main.ClipsDescendants = true
+local titulo = Instance.new("TextLabel", menuPrincipal)
+titulo.Size = UDim2.new(1, 0, 0, 50)
+titulo.BackgroundTransparency = 1
+titulo.Text = "Menu Torre Teste"
+titulo.TextColor3 = Color3.fromRGB(30, 30, 30)
+titulo.TextScaled = true
+titulo.Font = Enum.Font.GothamBold
 
-local header = Instance.new("TextLabel", main)
-header.Size = UDim2.new(1, 0, 0, 28)
-header.BackgroundTransparency = 1
-header.Text = "SlapBot"
-header.Font = Enum.Font.GothamBold
-header.TextSize = 20
-header.TextColor3 = Color3.new(1, 1, 1)
-header.TextScaled = true
+local abrirMenuUI = Instance.new("ScreenGui", guiService)
+abrirMenuUI.Name = "AbrirJanelaTopo"
 
-local statusButton = Instance.new("TextButton", main)
-statusButton.Size = UDim2.new(1, -20, 0, 26)
-statusButton.Position = UDim2.new(0, 10, 0, 32)
-statusButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
-statusButton.Text = "DESLIGADO"
-statusButton.Font = Enum.Font.Gotham
-statusButton.TextSize = 18
-statusButton.TextColor3 = Color3.new(1, 1, 1)
-statusButton.TextScaled = true
+local botaoMenu = Instance.new("TextButton", abrirMenuUI)
+botaoMenu.Size = UDim2.new(0, 60, 0, 60)
+botaoMenu.Position = UDim2.new(0.5, -300, 0.5, -150)
+botaoMenu.BackgroundColor3 = Color3.fromRGB(230, 230, 230)
+botaoMenu.Text = "≡"
+botaoMenu.TextSize = 28
+botaoMenu.Font = Enum.Font.GothamBold
+botaoMenu.TextColor3 = Color3.fromRGB(30, 30, 30)
+botaoMenu.BorderSizePixel = 0
+botaoMenu.AutoButtonColor = true
+botaoMenu.Active = true
+botaoMenu.Draggable = true
+Instance.new("UICorner", botaoMenu).CornerRadius = UDim.new(0, 12)
 
-local updateBtn = Instance.new("TextButton", main)
-updateBtn.Size = UDim2.new(0, 80, 0, 26)
-updateBtn.Position = UDim2.new(1, -90, 0, 64)
-updateBtn.BackgroundColor3 = Color3.fromRGB(0, 220, 0)
-updateBtn.Text = "Atualizar"
-updateBtn.Font = Enum.Font.GothamBold
-updateBtn.TextSize = 16
-updateBtn.TextColor3 = Color3.new(1, 1, 1)
-updateBtn.TextScaled = true
+botaoMenu.MouseButton1Click:Connect(function()
+	menuPrincipal.Visible = not menuPrincipal.Visible
+end)
 
-local targetBtn = Instance.new("TextButton", main)
-targetBtn.Size = UDim2.new(1, -110, 0, 26)
-targetBtn.Position = UDim2.new(0, 10, 0, 64)
-targetBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-targetBtn.Text = "Alvo: Todos"
-targetBtn.Font = Enum.Font.Gotham
-targetBtn.TextSize = 16
-targetBtn.TextColor3 = Color3.new(1, 1, 1)
-targetBtn.TextScaled = true
+local function novoBotao(texto, posY, acao)
+	local btn = Instance.new("TextButton", menuPrincipal)
+	btn.Size = UDim2.new(0, 380, 0, 40)
+	btn.Position = UDim2.new(0, 20, 0, posY)
+	btn.BackgroundColor3 = Color3.fromRGB(220, 220, 220)
+	btn.TextColor3 = Color3.fromRGB(30, 30, 30)
+	btn.TextScaled = true
+	btn.Font = Enum.Font.Gotham
+	btn.Text = texto
+	btn.BorderSizePixel = 0
+	btn.MouseButton1Click:Connect(acao)
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
+end
 
-local scroll = Instance.new("ScrollingFrame", gui)
-scroll.Size = UDim2.new(0, 240, 0, 120)
-scroll.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-scroll.BorderSizePixel = 0
-scroll.Visible = false
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
-scroll.ScrollBarThickness = 6
-scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
-scroll.ScrollingDirection = Enum.ScrollingDirection.Y
-scroll.ZIndex = 2
+novoBotao("Remover barreiras VIP", 60, function()
+	pcall(function()
+		workspace.KillPart:Destroy()
+		workspace.KlPart:Destroy()
+		workspace.Sign:Destroy()
+	end)
+end)
 
-local footer = Instance.new("TextLabel", main)
-footer.Size = UDim2.new(1, 0, 0, 20)
-footer.Position = UDim2.new(0, 0, 1, -20)
-footer.BackgroundTransparency = 1
-footer.Text = "Feito por DaviTrollz + sparrowjava614"
-footer.Font = Enum.Font.Gotham
-footer.TextSize = 14
-footer.TextColor3 = Color3.fromRGB(180,180,180)
-footer.TextScaled = true
+novoBotao("Ir até VIP", 110, function()
+	if rootPart then
+		rootPart.CFrame = CFrame.new(-14.625, 4, -9.27)
+	end
+end)
 
-local banner = Instance.new("TextLabel", gui)
-banner.Size = UDim2.new(0, 240, 0, 24)
-banner.Position = UDim2.new(0, 10, 0, 10)
-banner.BackgroundTransparency = 0.3
-banner.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-banner.Text = "Código modificado por DaviTrollz"
-banner.Font = Enum.Font.GothamBold
-banner.TextSize = 16
-banner.TextColor3 = Color3.new(1, 1, 1)
-banner.TextStrokeTransparency = 0.5
-banner.TextScaled = true
+novoBotao("Ir até Final", 160, function()
+	if rootPart then
+		rootPart.CFrame = CFrame.new(136.5, 374, 28.08)
+	end
+end)
 
-local fechar = Instance.new("TextButton", banner)
-fechar.Size = UDim2.new(0, 20, 1, 0)
-fechar.Position = UDim2.new(1, -24, 0, 0)
-fechar.BackgroundTransparency = 1
+local janelaTP = Instance.new("Frame", menuPrincipal)
+janelaTP.Size = UDim2.new(0, 420, 0, 280)
+janelaTP.Position = UDim2.new(0.5, -210, 0.5, -140)
+janelaTP.BackgroundColor3 = Color3.fromRGB(200, 255, 200)
+janelaTP.Visible = false
+janelaTP.Active = true
+janelaTP.Draggable = true
+Instance.new("UICorner", janelaTP).CornerRadius = UDim.new(0, 16)
+
+local tituloTP = Instance.new("TextLabel", janelaTP)
+tituloTP.Size = UDim2.new(1, -40, 0, 40)
+tituloTP.Position = UDim2.new(0, 0, 0, 0)
+tituloTP.BackgroundTransparency = 1
+tituloTP.Text = "Teleportar até Jogador"
+tituloTP.TextScaled = true
+tituloTP.Font = Enum.Font.GothamBold
+tituloTP.TextColor3 = Color3.fromRGB(30, 60, 30)
+
+local fechar = Instance.new("TextButton", janelaTP)
+fechar.Size = UDim2.new(0, 30, 0, 30)
+fechar.Position = UDim2.new(1, -35, 0, 5)
 fechar.Text = "X"
+fechar.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+fechar.TextColor3 = Color3.fromRGB(255, 255, 255)
 fechar.Font = Enum.Font.GothamBold
-fechar.TextColor3 = Color3.new(1, 0, 0)
-fechar.TextSize = 18
+fechar.TextScaled = true
+fechar.BorderSizePixel = 0
+Instance.new("UICorner", fechar).CornerRadius = UDim.new(0, 8)
+
+local atualizarLista = Instance.new("TextButton", janelaTP)
+atualizarLista.Size = UDim2.new(0, 100, 0, 30)
+atualizarLista.Position = UDim2.new(1, -145, 0, 5)
+atualizarLista.Text = "Atualizar"
+atualizarLista.BackgroundColor3 = Color3.fromRGB(150, 255, 150)
+atualizarLista.TextColor3 = Color3.fromRGB(20, 40, 20)
+atualizarLista.Font = Enum.Font.GothamBold
+atualizarLista.TextScaled = true
+atualizarLista.BorderSizePixel = 0
+Instance.new("UICorner", atualizarLista).CornerRadius = UDim.new(0, 8)
+
+local listaJogadores = Instance.new("ScrollingFrame", janelaTP)
+listaJogadores.Size = UDim2.new(1, -40, 0, 200)
+listaJogadores.Position = UDim2.new(0, 20, 0, 50)
+listaJogadores.BackgroundTransparency = 1
+listaJogadores.BorderSizePixel = 0
+listaJogadores.CanvasSize = UDim2.new(0, 0, 0, 0)
+listaJogadores.ScrollBarThickness = 6
+
+local layout = Instance.new("UIListLayout", listaJogadores)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+layout.Padding = UDim.new(0, 5)
+
+local function limparLista()
+	for _, c in pairs(listaJogadores:GetChildren()) do
+		if c:IsA("TextButton") then c:Destroy() end
+	end
+end
+
+local function carregarJogadores()
+	limparLista()
+	for _, p in pairs(players:GetPlayers()) do
+		if p ~= localPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+			local botao = Instance.new("TextButton", listaJogadores)
+			botao.Size = UDim2.new(1, 0, 0, 30)
+			botao.Text = p.Name
+			botao.Font = Enum.Font.Gotham
+			botao.TextScaled = true
+			botao.BackgroundColor3 = Color3.fromRGB(180, 255, 180)
+			botao.TextColor3 = Color3.fromRGB(20, 40, 20)
+			botao.BorderSizePixel = 0
+			Instance.new("UICorner", botao).CornerRadius = UDim.new(0, 6)
+
+			botao.MouseButton1Click:Connect(function()
+				if rootPart and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+					rootPart.CFrame = p.Character.HumanoidRootPart.CFrame + Vector3.new(2, 0, 0)
+				end
+			end)
+		end
+	end
+	task.wait()
+	listaJogadores.CanvasSize = UDim2.new(0, 0, 0, layout.AbsoluteContentSize.Y + 10)
+end
+
+atualizarLista.MouseButton1Click:Connect(carregarJogadores)
+
+local aberto = false
+novoBotao("Abrir TP", 210, function()
+	aberto = not aberto
+	janelaTP.Visible = aberto
+	if aberto then carregarJogadores() end
+end)
 
 fechar.MouseButton1Click:Connect(function()
-    banner:Destroy()
+	janelaTP.Visible = false
+	aberto = false
 end)
 
-task.spawn(function()
-    while banner and banner.Parent do
-        local now = tick()
-        banner.TextColor3 = Color3.fromHSV((now % 5) / 5, 1, 1)
-        task.wait(0.1)
-    end
-end)
-
-local function updateTargets()
-    scroll:ClearAllChildren()
-    local list = Players:GetPlayers()
-    for i, p in ipairs(list) do
-        if p ~= Me then
-            local box = Instance.new("Frame", scroll)
-            box.Size = UDim2.new(1, 0, 0, 26)
-            box.Position = UDim2.new(0, 0, 0, (i - 1) * 26)
-            box.BackgroundTransparency = 1
-
-            local choose = Instance.new("TextButton", box)
-            choose.Size = UDim2.new(0.65, 0, 1, 0)
-            choose.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
-            choose.Text = p.DisplayName
-            choose.Font = Enum.Font.Gotham
-            choose.TextSize = 16
-            choose.TextColor3 = Color3.new(1, 1, 1)
-            choose.TextScaled = true
-            choose.ZIndex = 3
-            choose.MouseButton1Click:Connect(function()
-                selectedTarget = p.DisplayName
-                targetBtn.Text = "Alvo: " .. p.DisplayName
-                scroll.Visible = false
-            end)
-
-            local spec = Instance.new("TextButton", box)
-            spec.Size = UDim2.new(0.3, 0, 1, 0)
-            spec.Position = UDim2.new(0.7, 4, 0, 0)
-            spec.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-            spec.Text = "Olhar"
-            spec.Font = Enum.Font.GothamBold
-            spec.TextSize = 14
-            spec.TextColor3 = Color3.new(1,1,1)
-            spec.TextScaled = true
-            spec.ZIndex = 3
-
-            local vendo = false
-            spec.MouseButton1Down:Connect(function()
-                vendo = true
-                if p.Character and p.Character:FindFirstChild("Humanoid") then
-                    Camera.CurrentCamera.CameraSubject = p.Character:FindFirstChild("Humanoid")
-                end
-            end)
-
-            local stopView = function()
-                if vendo then
-                    vendo = false
-                    if Me.Character and Me.Character:FindFirstChild("Humanoid") then
-                        Camera.CurrentCamera.CameraSubject = Me.Character:FindFirstChild("Humanoid")
-                    end
-                end
-            end
-
-            spec.MouseButton1Up:Connect(stopView)
-            spec.MouseLeave:Connect(stopView)
-
-            Input.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-                    stopView()
-                end
-            end)
-        end
-    end
-end
-
-targetBtn.MouseButton1Click:Connect(function()
-    scroll.Position = UDim2.new(0, targetBtn.AbsolutePosition.X, 0, targetBtn.AbsolutePosition.Y + targetBtn.AbsoluteSize.Y)
-    scroll.Visible = not scroll.Visible
-end)
-
-updateBtn.MouseButton1Click:Connect(function()
-    updateTargets()
-end)
-
-updateTargets()
-
-local function equipSlap()
-    local bag = Me:FindFirstChild("Backpack")
-    local char = Me.Character
-    if not bag or not char then return false end
-    if char:FindFirstChild("SecretSlap") then return true end
-    if bag:FindFirstChild("SecretSlap") then
-        bag.SecretSlap.Parent = char
-        return true
-    end
-    Replicated.Z:FireServer("SecretSlap")
-    for i = 1, 30 do
-        if bag:FindFirstChild("SecretSlap") then
-            bag.SecretSlap.Parent = char
-            return true
-        end
-        task.wait(0.1)
-    end
-    return char:FindFirstChild("SecretSlap") ~= nil
-end
-
-local function slapThread()
-    while working do
-        if equipSlap() then
-            local found = {}
-            for _, p in ipairs(Players:GetPlayers()) do
-                if p ~= Me and p.Character then
-                    if selectedTarget == "Todos" or p.DisplayName == selectedTarget then
-                        table.insert(found, p)
-                    end
-                end
-            end
-            for _, p in ipairs(found) do
-                if not working then return end
-                local targetPos = getSlapPosition(voidMode)
-                Me.Character.SecretSlap.Event:FireServer("slash", p.Character, targetPos)
-                task.wait(attackDelay)
-            end
-        else
-            task.wait(0.5)
-        end
-    end
-end
-
-local function iniciarAutoSlap()
-    if not working then return end
-    if loopRef and coroutine.status(loopRef) ~= "dead" then return end
-    loopRef = coroutine.create(slapThread)
-    coroutine.resume(loopRef)
-end
-
-statusButton.MouseButton1Click:Connect(function()
-    working = not working
-    statusButton.Text = working and "LIGADO" or "DESLIGADO"
-    statusButton.BackgroundColor3 = working and Color3.fromRGB(200, 90, 90) or Color3.fromRGB(100, 200, 100)
-    if working then
-        iniciarAutoSlap()
-    end
-end)
-
-Me.CharacterAdded:Connect(function()
-    if working then
-        task.wait(1)
-        iniciarAutoSlap()
-    end
+novoBotao("Fechar Tudo", 260, function()
+	mainUI:Destroy()
+	abrirMenuUI:Destroy()
 end)

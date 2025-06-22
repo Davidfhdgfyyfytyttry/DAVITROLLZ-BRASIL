@@ -1,261 +1,243 @@
-local function VoidSlap(isVoid)
-    if isVoid then
-        return Vector3.new(8.398977279663086, -999999, -5.427446365356445)
+local function getSlapPosition(isFalling)
+    if isFalling then
+        return Vector3.new(8.4, -999999, -5.4)
     else
-        return Vector3.new(8.398977279663086, 2.2562765877864877e-07, -5.427446365356445)
+        return Vector3.new(8.4, 0, -5.4)
     end
 end
 
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Me = Players.LocalPlayer
+local Replicated = game:GetService("ReplicatedStorage")
 local CoreGui = game:GetService("CoreGui")
-local Workspace = game:GetService("Workspace")
-local UserInputService = game:GetService("UserInputService")
+local Camera = game:GetService("Workspace")
+local Input = game:GetService("UserInputService")
 
-local actionName = "slash"
-local isVoid = _G.isVoid or false
-local running = false
-local attackThread = nil
-local targetName = "All Players"
+local toggleState = false
+local selectedTarget = "Todos"
+local attackDelay = 0.05
+local voidMode = _G.isVoid or false
+local working = false
+local loopRef = nil
 
--- Velocidade do tapa em segundos (ex: 0.01 = 100 taps por segundo)
-local attackSpeed = 0.05
+local gui = Instance.new("ScreenGui", CoreGui)
+gui.Name = "SlapAutoUI"
+gui.ResetOnSpawn = false
 
-local screenGui = Instance.new("ScreenGui", CoreGui)
-screenGui.Name = "AutoSlapGUI"
-screenGui.ResetOnSpawn = false
+local main = Instance.new("Frame", gui)
+main.Size = UDim2.new(0, 260, 0, 180)
+main.Position = UDim2.new(0, 100, 0, 100)
+main.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+main.BorderSizePixel = 0
+main.Active = true
+main.Draggable = true
+main.ClipsDescendants = true
 
-local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 260, 0, 180)
-frame.Position = UDim2.new(0, 100, 0, 100)
-frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
-frame.ClipsDescendants = true
+local header = Instance.new("TextLabel", main)
+header.Size = UDim2.new(1, 0, 0, 28)
+header.BackgroundTransparency = 1
+header.Text = "SlapBot"
+header.Font = Enum.Font.GothamBold
+header.TextSize = 20
+header.TextColor3 = Color3.new(1, 1, 1)
+header.TextScaled = true
 
-local title = Instance.new("TextLabel", frame)
-title.Size = UDim2.new(1, 0, 0, 28)
-title.BackgroundTransparency = 1
-title.Text = "Auto Slap"
-title.Font = Enum.Font.SourceSansBold
-title.TextSize = 20
-title.TextColor3 = Color3.fromRGB(255,255,255)
-title.TextScaled = true
+local statusButton = Instance.new("TextButton", main)
+statusButton.Size = UDim2.new(1, -20, 0, 26)
+statusButton.Position = UDim2.new(0, 10, 0, 32)
+statusButton.BackgroundColor3 = Color3.fromRGB(100, 200, 100)
+statusButton.Text = "DESLIGADO"
+statusButton.Font = Enum.Font.Gotham
+statusButton.TextSize = 18
+statusButton.TextColor3 = Color3.new(1, 1, 1)
+statusButton.TextScaled = true
 
-local toggle = Instance.new("TextButton", frame)
-toggle.Size = UDim2.new(1, -20, 0, 26)
-toggle.Position = UDim2.new(0, 10, 0, 32)
-toggle.BackgroundColor3 = Color3.fromRGB(80, 180, 80)
-toggle.Text = "OFF"
-toggle.Font = Enum.Font.SourceSans
-toggle.TextSize = 18
-toggle.TextColor3 = Color3.fromRGB(255,255,255)
-toggle.TextScaled = true
+local updateBtn = Instance.new("TextButton", main)
+updateBtn.Size = UDim2.new(0, 80, 0, 26)
+updateBtn.Position = UDim2.new(1, -90, 0, 64)
+updateBtn.BackgroundColor3 = Color3.fromRGB(0, 220, 0)
+updateBtn.Text = "Atualizar"
+updateBtn.Font = Enum.Font.GothamBold
+updateBtn.TextSize = 16
+updateBtn.TextColor3 = Color3.new(1, 1, 1)
+updateBtn.TextScaled = true
 
-local refreshBtn = Instance.new("TextButton", frame)
-refreshBtn.Size = UDim2.new(0, 80, 0, 26)
-refreshBtn.Position = UDim2.new(1, -90, 0, 64)
-refreshBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-refreshBtn.Text = "Refresh"
-refreshBtn.Font = Enum.Font.SourceSansBold
-refreshBtn.TextSize = 16
-refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-refreshBtn.TextScaled = true
+local targetBtn = Instance.new("TextButton", main)
+targetBtn.Size = UDim2.new(1, -110, 0, 26)
+targetBtn.Position = UDim2.new(0, 10, 0, 64)
+targetBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+targetBtn.Text = "Alvo: Todos"
+targetBtn.Font = Enum.Font.Gotham
+targetBtn.TextSize = 16
+targetBtn.TextColor3 = Color3.new(1, 1, 1)
+targetBtn.TextScaled = true
 
-local dropdown = Instance.new("TextButton", frame)
-dropdown.Size = UDim2.new(1, -110, 0, 26)
-dropdown.Position = UDim2.new(0, 10, 0, 64)
-dropdown.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
-dropdown.Text = "Alvo: Todos"
-dropdown.Font = Enum.Font.SourceSans
-dropdown.TextSize = 16
-dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-dropdown.TextScaled = true
+local scroll = Instance.new("ScrollingFrame", gui)
+scroll.Size = UDim2.new(0, 240, 0, 120)
+scroll.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+scroll.BorderSizePixel = 0
+scroll.Visible = false
+scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.ScrollBarThickness = 6
+scroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+scroll.ScrollingDirection = Enum.ScrollingDirection.Y
+scroll.ZIndex = 2
 
-local dropdownList = Instance.new("ScrollingFrame", screenGui)
-dropdownList.Size = UDim2.new(0, 240, 0, 120)
-dropdownList.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-dropdownList.BorderSizePixel = 0
-dropdownList.Visible = false
-dropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
-dropdownList.ScrollBarThickness = 6
-dropdownList.AutomaticCanvasSize = Enum.AutomaticSize.Y
-dropdownList.ScrollingDirection = Enum.ScrollingDirection.Y
-dropdownList.ZIndex = 2
+local footer = Instance.new("TextLabel", main)
+footer.Size = UDim2.new(1, 0, 0, 20)
+footer.Position = UDim2.new(0, 0, 1, -20)
+footer.BackgroundTransparency = 1
+footer.Text = "Feito por DaviTrollz + sparrowjava614"
+footer.Font = Enum.Font.Gotham
+footer.TextSize = 14
+footer.TextColor3 = Color3.fromRGB(180,180,180)
+footer.TextScaled = true
 
-local credits = Instance.new("TextLabel", frame)
-credits.Size = UDim2.new(1, 0, 0, 20)
-credits.Position = UDim2.new(0, 0, 1, -20)
-credits.BackgroundTransparency = 1
-credits.Text = "By Davitrollz e By sparrowjava614"
-credits.Font = Enum.Font.SourceSansItalic
-credits.TextSize = 14
-credits.TextColor3 = Color3.fromRGB(180,180,180)
-credits.TextScaled = true
-
-local banner = Instance.new("TextLabel", screenGui)
+local banner = Instance.new("TextLabel", gui)
 banner.Size = UDim2.new(0, 240, 0, 24)
 banner.Position = UDim2.new(0, 10, 0, 10)
 banner.BackgroundTransparency = 0.3
-banner.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-banner.Text = "Script melhorado por Davi Trollz"
-banner.Font = Enum.Font.SourceSansBold
+banner.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+banner.Text = "Código modificado por DaviTrollz"
+banner.Font = Enum.Font.GothamBold
 banner.TextSize = 16
 banner.TextColor3 = Color3.new(1, 1, 1)
 banner.TextStrokeTransparency = 0.5
 banner.TextScaled = true
 
-local closeBanner = Instance.new("TextButton", banner)
-closeBanner.Size = UDim2.new(0, 20, 1, 0)
-closeBanner.Position = UDim2.new(1, -24, 0, 0)
-closeBanner.BackgroundTransparency = 1
-closeBanner.Text = "X"
-closeBanner.Font = Enum.Font.SourceSansBold
-closeBanner.TextColor3 = Color3.new(1, 0, 0)
-closeBanner.TextSize = 18
+local fechar = Instance.new("TextButton", banner)
+fechar.Size = UDim2.new(0, 20, 1, 0)
+fechar.Position = UDim2.new(1, -24, 0, 0)
+fechar.BackgroundTransparency = 1
+fechar.Text = "X"
+fechar.Font = Enum.Font.GothamBold
+fechar.TextColor3 = Color3.new(1, 0, 0)
+fechar.TextSize = 18
 
-closeBanner.MouseButton1Click:Connect(function()
+fechar.MouseButton1Click:Connect(function()
     banner:Destroy()
 end)
 
 task.spawn(function()
     while banner and banner.Parent do
-        local t = tick()
-        banner.TextColor3 = Color3.fromHSV((t % 5) / 5, 1, 1)
+        local now = tick()
+        banner.TextColor3 = Color3.fromHSV((now % 5) / 5, 1, 1)
         task.wait(0.1)
     end
 end)
 
-local function refreshDropdown()
-    dropdownList:ClearAllChildren()
-    local allPlayers = Players:GetPlayers()
-    for i, plr in ipairs(allPlayers) do
-        if plr ~= LocalPlayer then
-            local container = Instance.new("Frame", dropdownList)
-            container.Size = UDim2.new(1, 0, 0, 26)
-            container.Position = UDim2.new(0, 0, 0, (i - 1) * 26)
-            container.BackgroundTransparency = 1
+local function updateTargets()
+    scroll:ClearAllChildren()
+    local list = Players:GetPlayers()
+    for i, p in ipairs(list) do
+        if p ~= Me then
+            local box = Instance.new("Frame", scroll)
+            box.Size = UDim2.new(1, 0, 0, 26)
+            box.Position = UDim2.new(0, 0, 0, (i - 1) * 26)
+            box.BackgroundTransparency = 1
 
-            local btn = Instance.new("TextButton", container)
-            btn.Size = UDim2.new(0.65, 0, 1, 0)
-            btn.Position = UDim2.new(0, 0, 0, 0)
-            btn.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-            btn.Text = plr.DisplayName
-            btn.Font = Enum.Font.SourceSans
-            btn.TextSize = 16
-            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-            btn.TextScaled = true
-            btn.ZIndex = 3
-            btn.MouseButton1Click:Connect(function()
-                targetName = plr.DisplayName
-                dropdown.Text = "Alvo: " .. plr.DisplayName
-                dropdownList.Visible = false
+            local choose = Instance.new("TextButton", box)
+            choose.Size = UDim2.new(0.65, 0, 1, 0)
+            choose.BackgroundColor3 = Color3.fromRGB(80, 80, 80)
+            choose.Text = p.DisplayName
+            choose.Font = Enum.Font.Gotham
+            choose.TextSize = 16
+            choose.TextColor3 = Color3.new(1, 1, 1)
+            choose.TextScaled = true
+            choose.ZIndex = 3
+            choose.MouseButton1Click:Connect(function()
+                selectedTarget = p.DisplayName
+                targetBtn.Text = "Alvo: " .. p.DisplayName
+                scroll.Visible = false
             end)
 
-            local spectate = Instance.new("TextButton", container)
-            spectate.Size = UDim2.new(0.3, 0, 1, 0)
-            spectate.Position = UDim2.new(0.7, 4, 0, 0)
-            spectate.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-            spectate.Text = "Spectate"
-            spectate.Font = Enum.Font.SourceSansBold
-            spectate.TextSize = 14
-            spectate.TextColor3 = Color3.new(1,1,1)
-            spectate.TextScaled = true
-            spectate.ZIndex = 3
+            local spec = Instance.new("TextButton", box)
+            spec.Size = UDim2.new(0.3, 0, 1, 0)
+            spec.Position = UDim2.new(0.7, 4, 0, 0)
+            spec.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
+            spec.Text = "Olhar"
+            spec.Font = Enum.Font.GothamBold
+            spec.TextSize = 14
+            spec.TextColor3 = Color3.new(1,1,1)
+            spec.TextScaled = true
+            spec.ZIndex = 3
 
-            local holdingSpectate = false
-
-            spectate.MouseButton1Down:Connect(function()
-                holdingSpectate = true
-                if plr.Character and plr.Character:FindFirstChild("Humanoid") then
-                    Workspace.CurrentCamera.CameraSubject = plr.Character:FindFirstChild("Humanoid")
+            local vendo = false
+            spec.MouseButton1Down:Connect(function()
+                vendo = true
+                if p.Character and p.Character:FindFirstChild("Humanoid") then
+                    Camera.CurrentCamera.CameraSubject = p.Character:FindFirstChild("Humanoid")
                 end
             end)
 
-            local function stopSpectate()
-                if holdingSpectate then
-                    holdingSpectate = false
-                    if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("Humanoid") then
-                        Workspace.CurrentCamera.CameraSubject = LocalPlayer.Character:FindFirstChild("Humanoid")
+            local stopView = function()
+                if vendo then
+                    vendo = false
+                    if Me.Character and Me.Character:FindFirstChild("Humanoid") then
+                        Camera.CurrentCamera.CameraSubject = Me.Character:FindFirstChild("Humanoid")
                     end
                 end
             end
 
-            spectate.MouseButton1Up:Connect(stopSpectate)
-            spectate.MouseLeave:Connect(stopSpectate)
+            spec.MouseButton1Up:Connect(stopView)
+            spec.MouseLeave:Connect(stopView)
 
-            UserInputService.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.Touch or input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    stopSpectate()
+            Input.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+                    stopView()
                 end
             end)
         end
     end
 end
 
-dropdown.MouseButton1Click:Connect(function()
-    dropdownList.Position = UDim2.new(0, dropdown.AbsolutePosition.X, 0, dropdown.AbsolutePosition.Y + dropdown.AbsoluteSize.Y)
-    dropdownList.Visible = not dropdownList.Visible
+targetBtn.MouseButton1Click:Connect(function()
+    scroll.Position = UDim2.new(0, targetBtn.AbsolutePosition.X, 0, targetBtn.AbsolutePosition.Y + targetBtn.AbsoluteSize.Y)
+    scroll.Visible = not scroll.Visible
 end)
 
-local refreshBtn = frame:FindFirstChild("Refresh") -- Just in case
-if not refreshBtn then
-    refreshBtn = Instance.new("TextButton", frame)
-    refreshBtn.Name = "Refresh"
-    refreshBtn.Size = UDim2.new(0, 80, 0, 26)
-    refreshBtn.Position = UDim2.new(1, -90, 0, 64)
-    refreshBtn.BackgroundColor3 = Color3.fromRGB(0, 200, 0)
-    refreshBtn.Text = "Refresh"
-    refreshBtn.Font = Enum.Font.SourceSansBold
-    refreshBtn.TextSize = 16
-    refreshBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    refreshBtn.TextScaled = true
-end
-
-refreshBtn.MouseButton1Click:Connect(function()
-    refreshDropdown()
+updateBtn.MouseButton1Click:Connect(function()
+    updateTargets()
 end)
 
-refreshDropdown()
+updateTargets()
 
-local function ensureSecretSlapEquipped()
-    local backpack = LocalPlayer:FindFirstChild("Backpack")
-    local character = LocalPlayer.Character
-    if not backpack or not character then return false end
-    if character:FindFirstChild("SecretSlap") then return true end
-    if backpack:FindFirstChild("SecretSlap") then
-        backpack.SecretSlap.Parent = character
+local function equipSlap()
+    local bag = Me:FindFirstChild("Backpack")
+    local char = Me.Character
+    if not bag or not char then return false end
+    if char:FindFirstChild("SecretSlap") then return true end
+    if bag:FindFirstChild("SecretSlap") then
+        bag.SecretSlap.Parent = char
         return true
     end
-    ReplicatedStorage.Z:FireServer("SecretSlap")
+    Replicated.Z:FireServer("SecretSlap")
     for i = 1, 30 do
-        if backpack:FindFirstChild("SecretSlap") then
-            backpack.SecretSlap.Parent = character
+        if bag:FindFirstChild("SecretSlap") then
+            bag.SecretSlap.Parent = char
             return true
         end
         task.wait(0.1)
     end
-    return character:FindFirstChild("SecretSlap") ~= nil
+    return char:FindFirstChild("SecretSlap") ~= nil
 end
 
-local function attackLoop()
-    while running do
-        if ensureSecretSlapEquipped() then
-            local targets = {}
-            for _, player in ipairs(Players:GetPlayers()) do
-                if player ~= LocalPlayer and player.Character then
-                    if targetName == "All Players" or player.DisplayName == targetName then
-                        table.insert(targets, player)
+local function slapThread()
+    while working do
+        if equipSlap() then
+            local found = {}
+            for _, p in ipairs(Players:GetPlayers()) do
+                if p ~= Me and p.Character then
+                    if selectedTarget == "Todos" or p.DisplayName == selectedTarget then
+                        table.insert(found, p)
                     end
                 end
             end
-            for _, player in ipairs(targets) do
-                if not running then return end
-                local pos = VoidSlap(isVoid)
-                LocalPlayer.Character.SecretSlap.Event:FireServer("slash", player.Character, pos)
-                task.wait(attackSpeed)
+            for _, p in ipairs(found) do
+                if not working then return end
+                local targetPos = getSlapPosition(voidMode)
+                Me.Character.SecretSlap.Event:FireServer("slash", p.Character, targetPos)
+                task.wait(attackDelay)
             end
         else
             task.wait(0.5)
@@ -263,25 +245,25 @@ local function attackLoop()
     end
 end
 
-local function startAutoSlap()
-    if not running then return end
-    if attackThread and coroutine.status(attackThread) ~= "dead" then return end
-    attackThread = coroutine.create(attackLoop)
-    coroutine.resume(attackThread)
+local function iniciarAutoSlap()
+    if not working then return end
+    if loopRef and coroutine.status(loopRef) ~= "dead" then return end
+    loopRef = coroutine.create(slapThread)
+    coroutine.resume(loopRef)
 end
 
-toggle.MouseButton1Click:Connect(function()
-    running = not running
-    toggle.Text = running and "ON" or "OFF"
-    toggle.BackgroundColor3 = running and Color3.fromRGB(180, 80, 80) or Color3.fromRGB(80, 180, 80)
-    if running then
-        startAutoSlap()
+statusButton.MouseButton1Click:Connect(function()
+    working = not working
+    statusButton.Text = working and "LIGADO" or "DESLIGADO"
+    statusButton.BackgroundColor3 = working and Color3.fromRGB(200, 90, 90) or Color3.fromRGB(100, 200, 100)
+    if working then
+        iniciarAutoSlap()
     end
 end)
 
-LocalPlayer.CharacterAdded:Connect(function()
-    if running then
+Me.CharacterAdded:Connect(function()
+    if working then
         task.wait(1)
-        startAutoSlap()
+        iniciarAutoSlap()
     end
 end)

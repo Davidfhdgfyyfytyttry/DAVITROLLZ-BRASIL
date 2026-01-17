@@ -1,0 +1,64 @@
+--// SIMPLE AIMBOT MODULE
+--// Mobile + PC | Ignore allies | Enable / Disable
+
+local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
+local Camera = Workspace.CurrentCamera
+
+local Aimbot = {}
+Aimbot.Enabled = false
+Aimbot.FOV = 250
+Aimbot.Smooth = 0.2
+
+-- você passa essa função do teu script
+Aimbot.IsEnemy = nil  
+
+local function screenCenter()
+    local v = Camera.ViewportSize
+    return Vector2.new(v.X/2, v.Y/2)
+end
+
+local function getClosest()
+    if not Aimbot.IsEnemy then return end
+
+    local closest, dist = nil, Aimbot.FOV
+
+    for _,m in pairs(Workspace:GetDescendants()) do
+        if m:IsA("Model") and m:FindFirstChild("HumanoidRootPart") then
+            if Aimbot.IsEnemy(m) then
+                local root = m.HumanoidRootPart
+                local pos, vis = Camera:WorldToViewportPoint(root.Position)
+                if vis then
+                    local d = (Vector2.new(pos.X,pos.Y) - screenCenter()).Magnitude
+                    if d < dist then
+                        dist = d
+                        closest = root
+                    end
+                end
+            end
+        end
+    end
+
+    return closest
+end
+
+RunService.RenderStepped:Connect(function()
+    if not Aimbot.Enabled then return end
+
+    local target = getClosest()
+    if target then
+        local camPos = Camera.CFrame.Position
+        local cf = CFrame.new(camPos, target.Position)
+        Camera.CFrame = Camera.CFrame:Lerp(cf, Aimbot.Smooth)
+    end
+end)
+
+function Aimbot:Enable()
+    self.Enabled = true
+end
+
+function Aimbot:Disable()
+    self.Enabled = false
+end
+
+return Aimbot

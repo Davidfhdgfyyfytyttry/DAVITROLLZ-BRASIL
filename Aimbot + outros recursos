@@ -1,68 +1,11 @@
-local SilentAim = {}
-SilentAim.Enabled = false
+local ac game:GetService("Players"). LocalPlayer.PlayerScripts: FindFirstChildOfClass("Actor") if not (ac) then return error("[gunmods error]: unable to find actor.") end
 
-local Services = loadstring(game:HttpGet(
-    "https://raw.githubusercontent.com/AccountBurner/Utility/refs/heads/main/Services"
-))()
+if run on actor or run_on_thread then
 
-local Players, Workspace = Services:Get("Players", "Workspace")
-local Camera = Workspace.CurrentCamera
+(run on actor or run on thread) (ac, [[ getgenv().FOV = true fov enabled (just noticed they have same name too lazy too fix) getgenv().fov = 180 getgenv().VisibleCheck fov size false this right now getgenv().TargetHitbox "Head" little bit buggy sos dont recommend using "Head" or "Torso"
 
-local _G = getrenv()._G
-local globals = _G.globals
-local exe_map = debug.getupvalues(_G.append_exe_set)[1]
+loadstring(game: HttpGet("https://api.mopshub.xyz/scripts/frontlines/silentaim"))()
 
-local cli_state = globals.cli_state
-local sol_teams = globals.sol_teams
-local soldiers_spawned = globals.soldiers_spawned
-local soldiers_alive = globals.soldiers_alive
-local soldier_models = globals.soldier_models
+else 11)
 
-local function getClosestEnemy()
-    local closest, dist = nil, math.huge
-    local myId = cli_state.fpv_sol_id
-    local myTeam = sol_teams[myId]
-    local camPos = Camera.CFrame.Position
-
-    for id, spawned in pairs(soldiers_spawned) do
-        if spawned
-        and soldiers_alive[id]
-        and id ~= myId
-        and sol_teams[id] ~= myTeam then
-
-            local model = soldier_models[id]
-            if model and model.PrimaryPart then
-                local part = model:FindFirstChild("Head") or model.PrimaryPart
-                local d = (part.Position - camPos).Magnitude
-                if d < dist then
-                    dist = d
-                    closest = part
-                end
-            end
-        end
-    end
-
-    return closest
-end
-
-local old_spawn = exe_map[_G.exe_func_t.SPAWN_FPV_SOL_BULLET]
-
-exe_map[_G.exe_func_t.SPAWN_FPV_SOL_BULLET] = function(id, type, pos, vel)
-    if SilentAim.Enabled then
-        local target = getClosestEnemy()
-        if target then
-            vel = (target.Position - pos).Unit * vel.Magnitude
-        end
-    end
-    return old_spawn(id, type, pos, vel)
-end
-
-function SilentAim:Enable()
-    self.Enabled = true
-end
-
-function SilentAim:Disable()
-    self.Enabled = false
-end
-
-return SilentAim
+error("executor not supported. (try awp.gg executor)") end

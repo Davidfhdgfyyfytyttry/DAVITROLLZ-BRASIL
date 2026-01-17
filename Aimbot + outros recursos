@@ -1,33 +1,43 @@
--- Aimbot estável (SEM SHAKE)
+local SilentAim = {}
+SilentAim.Enabled = false
 
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local Camera = workspace.CurrentCamera
-local LP = Players.LocalPlayer
+local Services = loadstring(game:HttpGet(
+    "https://raw.githubusercontent.com/AccountBurner/Utility/refs/heads/main/Services"
+))()
 
-local Aimbot = {}
-Aimbot.Enabled = false
-Aimbot.Smooth = 0.2
-Aimbot.Target = nil
+local Players, Workspace = Services:Get("Players", "Workspace")
+local Camera = Workspace.CurrentCamera
 
--- CONFIGURA ISSO COM TEU CHECK DE INIMIGO
-function Aimbot:IsEnemy(model)
-    return model.Name == "soldier_model"
-       and not model:FindFirstChild("friendly_marker")
-       and model:FindFirstChild("HumanoidRootPart")
-end
+local _G = getrenv()._G
+local globals = _G.globals
+local exe_map = debug.getupvalues(_G.append_exe_set)[1]
 
-local function acquireTarget()
+local cli_state = globals.cli_state
+local sol_teams = globals.sol_teams
+local soldiers_spawned = globals.soldiers_spawned
+local soldiers_alive = globals.soldiers_alive
+local soldier_models = globals.soldier_models
+
+local function getClosestEnemy()
     local closest, dist = nil, math.huge
+    local myId = cli_state.fpv_sol_id
+    local myTeam = sol_teams[myId]
     local camPos = Camera.CFrame.Position
 
-    for _,m in pairs(workspace:GetChildren()) do
-        if m:IsA("Model") and Aimbot:IsEnemy(m) then
-            local hrp = m.HumanoidRootPart
-            local d = (camPos - hrp.Position).Magnitude
-            if d < dist then
-                dist = d
-                closest = hrp
+    for id, spawned in pairs(soldiers_spawned) do
+        if spawned
+        and soldiers_alive[id]
+        and id ~= myId
+        and sol_teams[id] ~= myTeam then
+
+            local model = soldier_models[id]
+            if model and model.PrimaryPart then
+                local part = model:FindFirstChild("Head") or model.PrimaryPart
+                local d = (part.Position - camPos).Magnitude
+                if d < dist then
+                    dist = d
+                    closest = part
+                end
             end
         end
     end
@@ -35,33 +45,24 @@ local function acquireTarget()
     return closest
 end
 
--- LOOP ÚNICO (NUNCA DUPLICA)
-RunService:BindToRenderStep("AimbotLock", 200, function()
-    if not Aimbot.Enabled then return end
+local old_spawn = exe_map[_G.exe_func_t.SPAWN_FPV_SOL_BULLET]
 
-    if not Aimbot.Target
-    or not Aimbot.Target.Parent then
-        Aimbot.Target = acquireTarget()
+exe_map[_G.exe_func_t.SPAWN_FPV_SOL_BULLET] = function(id, type, pos, vel)
+    if SilentAim.Enabled then
+        local target = getClosestEnemy()
+        if target then
+            vel = (target.Position - pos).Unit * vel.Magnitude
+        end
     end
+    return old_spawn(id, type, pos, vel)
+end
 
-    if not Aimbot.Target then return end
-
-    local camPos = Camera.CFrame.Position
-    local targetPos = Aimbot.Target.Position
-
-    Camera.CFrame = Camera.CFrame:Lerp(
-        CFrame.new(camPos, targetPos),
-        Aimbot.Smooth
-    )
-end)
-
-function Aimbot:Enable()
+function SilentAim:Enable()
     self.Enabled = true
 end
 
-function Aimbot:Disable()
+function SilentAim:Disable()
     self.Enabled = false
-    self.Target = nil
 end
 
-return Aimbot
+return SilentAim

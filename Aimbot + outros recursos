@@ -1,31 +1,33 @@
--- AIMBOT MOBILE + PC (GRUDÃO)
+-- Aimbot estável (SEM SHAKE)
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local Camera = workspace.CurrentCamera
-local LocalPlayer = Players.LocalPlayer
+local LP = Players.LocalPlayer
 
 local Aimbot = {}
 Aimbot.Enabled = false
-Aimbot.Smoothness = 0.15 -- menor = mais grudado
-Aimbot.TeamCheck = true
-Aimbot.IsEnemy = function() return true end
+Aimbot.Smooth = 0.2
+Aimbot.Target = nil
 
-local currentTarget = nil
+-- CONFIGURA ISSO COM TEU CHECK DE INIMIGO
+function Aimbot:IsEnemy(model)
+    return model.Name == "soldier_model"
+       and not model:FindFirstChild("friendly_marker")
+       and model:FindFirstChild("HumanoidRootPart")
+end
 
-local function getClosestEnemy()
+local function acquireTarget()
     local closest, dist = nil, math.huge
     local camPos = Camera.CFrame.Position
 
-    for _,v in pairs(workspace:GetDescendants()) do
-        if v:IsA("Model") and v:FindFirstChild("HumanoidRootPart") then
-            if Aimbot.IsEnemy(v) then
-                local hrp = v.HumanoidRootPart
-                local d = (camPos - hrp.Position).Magnitude
-                if d < dist then
-                    dist = d
-                    closest = hrp
-                end
+    for _,m in pairs(workspace:GetChildren()) do
+        if m:IsA("Model") and Aimbot:IsEnemy(m) then
+            local hrp = m.HumanoidRootPart
+            local d = (camPos - hrp.Position).Magnitude
+            if d < dist then
+                dist = d
+                closest = hrp
             end
         end
     end
@@ -33,21 +35,24 @@ local function getClosestEnemy()
     return closest
 end
 
-RunService.RenderStepped:Connect(function()
+-- LOOP ÚNICO (NUNCA DUPLICA)
+RunService:BindToRenderStep("AimbotLock", 200, function()
     if not Aimbot.Enabled then return end
 
-    currentTarget = getClosestEnemy()
-    if not currentTarget then return end
+    if not Aimbot.Target
+    or not Aimbot.Target.Parent then
+        Aimbot.Target = acquireTarget()
+    end
 
-    local camCF = Camera.CFrame
-    local targetPos = currentTarget.Position
+    if not Aimbot.Target then return end
 
-    local newCF = camCF:Lerp(
-        CFrame.new(camCF.Position, targetPos),
-        Aimbot.Smoothness
+    local camPos = Camera.CFrame.Position
+    local targetPos = Aimbot.Target.Position
+
+    Camera.CFrame = Camera.CFrame:Lerp(
+        CFrame.new(camPos, targetPos),
+        Aimbot.Smooth
     )
-
-    Camera.CFrame = newCF
 end)
 
 function Aimbot:Enable()
@@ -56,6 +61,7 @@ end
 
 function Aimbot:Disable()
     self.Enabled = false
+    self.Target = nil
 end
 
 return Aimbot
